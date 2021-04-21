@@ -14,7 +14,7 @@ public class Paciente extends Thread {
     }
 
     public void run() {
-        try {
+        try {//sleep antes de entrar a recepcion y evitar CrearPacientes?
             recepcion.meterColaEspera(this);
         } catch (Exception e) {
         }

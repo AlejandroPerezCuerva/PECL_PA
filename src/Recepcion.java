@@ -18,13 +18,13 @@ public class Recepcion {
     private BlockingQueue colaEspera = new LinkedBlockingDeque(); //Elegimos este tipo de cola porque es el más cómodo de utilizar
     
     private SalaVacunacion salaVacunacion; //Sala necesaria para que los pacientes pasen de recepcion a vacunacion
-    private ListaThreads colaEspera2;
+    private ListaThreads colaEspera2;   
     
     public Recepcion(JTextArea colaRecepcion, JTextField pacienteRecepcion, JTextField auxiliarRecepcion) {
         this.colaRecepcion = colaRecepcion;
         this.pacienteRecepcion = pacienteRecepcion;
         this.auxiliarRecepcion = auxiliarRecepcion;
-        //colaEspera2= new ListaThreads(colaRecepcion);  --> Comentado para que no de error, se necesita un JTextField no Area
+        colaEspera2= new ListaThreads(colaRecepcion);  
     }
 
     //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
@@ -37,7 +37,7 @@ public class Recepcion {
         }
     }
     
-    public void meterColaEspera2(Paciente paciente) {       //implementacion con ListaThreads, 
+    public void meterColaEspera2(Paciente paciente) {       //Prueba con ListaThreads, ignorar ya que seguramente se borre la clase y lo relativo a ella,
             colaEspera2.introducir(paciente); //Se mete al paciente en la cola
             colaEspera2.imprimir(); //Mostramos en la cola de espera los pacientes que tenemos
     }
@@ -51,11 +51,11 @@ public class Recepcion {
             //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
             auxiliarRecepcion.setText(auxiliar1.toString());
             try {
-                pacienteRecepcion.setText(colaEspera.take().toString());
+                Paciente paciente=(Paciente) colaEspera.take();
+                pacienteRecepcion.setText(paciente.toString());
                 colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
                 auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
                 if ((int) (100 * Math.random())<99) { //Se hace una comprobación para ver si el paciente esta citado o no, el 99% de los pacientes estarán citados
-                    Paciente paciente= (Paciente)colaEspera.remove();//Se castea el tipo Object al tipo paciente para operar con el y a la vez se elimina de la cola, no se si falla por el cast u otra razon
                     salaVacunacion.entraPaciente(paciente);
                 }
             } catch (InterruptedException ex) {
