@@ -47,10 +47,7 @@ public class Main extends javax.swing.JFrame {
         Auxiliar a2 = new Auxiliar(2, contadorAux2, salaVacunacion, salaDescanso);
         a1.start();
         a2.start();
-        for (int i = 0; i < 30; i++) {
-            Paciente pacienteNuevo= new Paciente(i, recepcion);
-            pacienteNuevo.start();
-        }
+
     }
 
     /**
