@@ -1,22 +1,29 @@
 
 import javax.swing.JTextField;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author aleja
- */
 public class Puesto {
     private JTextField jtfPuesto;
     private boolean disponible;
+    private Paciente paciente;
     
     public Puesto(JTextField jtfPuesto, boolean disponible){
         this.jtfPuesto=jtfPuesto;
         this.disponible=disponible;
+    }
+
+    public JTextField getJtfPuesto() {
+        return jtfPuesto;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+    public void entraPaciente(Paciente paciente){
+        this.paciente=paciente;
+        disponible=false;
+    }
+    public void salePaciente(){
+        paciente=null;
+        disponible=true;
     }
 }
