@@ -18,8 +18,9 @@ public class Paciente extends Thread {
     public void run() {
         try {//sleep antes de entrar a recepcion y evitar CrearPacientes? //Si se hace un sleep aqui el problema es que se crean los 2000 pacientes de golpe y 
             //todos hacen un sleep y entran a la vez, por eso hay que crear una clase de CrearPacientes
+            System.out.println(this.id + " Entra1"); 
             recepcion.meterColaEspera(this);
-            
+            System.out.println(this.id + " Entra2"); 
         } catch (Exception e) {
         }
     }

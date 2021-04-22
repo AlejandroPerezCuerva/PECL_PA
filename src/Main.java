@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.JTextField;
 
 /**
  *
@@ -16,12 +17,26 @@ public class Main extends javax.swing.JFrame {
     private AtomicInteger contadorAux1 = new AtomicInteger(0); //Se utiliza un atomic porque es mas seguro que un int normal, lo utilizamos de contador
     private AtomicInteger contadorAux2 = new AtomicInteger(0); //Hacen falta dos contadores porque sino se hace referencia al mismo
     private ArrayList<AtomicInteger> contadoresSanitarios = new ArrayList<>(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
+    private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>();
 
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        
+        //Se añaden los puestos a un array para que luego sea mas cómodo utilizarlos
+        puestosVacunacion.add(puesto1);
+        puestosVacunacion.add(puesto2);
+        puestosVacunacion.add(puesto3);
+        puestosVacunacion.add(puesto4);
+        puestosVacunacion.add(puesto5);
+        puestosVacunacion.add(puesto6);
+        puestosVacunacion.add(puesto7);
+        puestosVacunacion.add(puesto8);
+        puestosVacunacion.add(puesto9);
+        puestosVacunacion.add(puesto10);
+        
         //Insertamos todos los JTextField necesarios de Recepion
         recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
 
@@ -29,7 +44,7 @@ public class Main extends javax.swing.JFrame {
         salaDescanso = new SalaDescanso(colaSalaDescanso);
 
         //Insertamos todos los JTextField necesarios de SalaVacunacion
-        salaVacunacion = new SalaVacunacion(10, auxiliarVacunacion, numeroVacunas);
+        salaVacunacion = new SalaVacunacion(10, auxiliarVacunacion, numeroVacunas, puestosVacunacion);
 
         //Insertamos todos los JTextField necesarios de SalaVacunacion
         salaObservacion = new SalaObservacion(20);
@@ -39,7 +54,7 @@ public class Main extends javax.swing.JFrame {
         crearPacientes.start();
 
         for (int i = 0; i < 10; i++) {
-            Sanitario sanitarioNuevo = new Sanitario(i, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios); //Todos los parámetros necesarios para los sanitarios
+            Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios); //Todos los parámetros necesarios para los sanitarios
             sanitarioNuevo.start();
         }
 

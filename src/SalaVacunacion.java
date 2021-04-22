@@ -15,15 +15,17 @@ public class SalaVacunacion {
 
     private int max; //Número máximo de pacientes en la sala de vacunación
     private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
+    private ArrayList<JTextField> puestosVacunacion;
     private JTextField auxiliarVacunacion, numeroVacunas;
     private AtomicInteger contadorVacunas = new AtomicInteger(0);
     private SalaObservacion salaObservacion;    //Sala necesaria para que los pacientes pasen de vacunar a observar
     private BlockingQueue colaEspera = new LinkedBlockingDeque();//Cola de espera hasta que el auxiliar indique a que puesto ir
 
-    public SalaVacunacion(int max, JTextField auxiliarVacunacion, JTextField numeroVacunas) {
+    public SalaVacunacion(int max, JTextField auxiliarVacunacion, JTextField numeroVacunas, ArrayList<JTextField> puestosVacunacion) {
         this.max = max;
-        for (int i = 0; i < max; i++) {
-            Puesto nuevoPuesto = new Puesto(new JTextField(), true);
+        this.puestosVacunacion = puestosVacunacion;
+        for (int i = 0; i < puestosVacunacion.size(); i++) {
+            Puesto nuevoPuesto = new Puesto(puestosVacunacion.get(i), true); //NO SE PUEDEN CREAR LOS JTEXTFIELD SE TIENEN QUE PASAR DEL MAIN
             puestos.add(nuevoPuesto);
         }
         this.auxiliarVacunacion = auxiliarVacunacion;
@@ -65,11 +67,26 @@ public class SalaVacunacion {
         auxiliarVacunacion.setText(""); //Actualizamos el JTextField cuando el auxiliar se va a descansar
     }
 
-    public void entraPaciente(Paciente p) {
+    //Los sanitarios se colocan en el puesto que tengan libre
+    public void colocarSanitarios(Sanitario sanitario) {
+        for (int i = 0; i < puestos.size(); i++) {
+            if (puestos.get(i).isDisponible()) {
+                try {
+                    puestos.get(i).entraSanitario();
+                    puestos.get(i).getJtfPuesto().setText(sanitario.toString());
+                    sanitario.currentThread().sleep(3000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    public void entraPaciente(Paciente paciente) {
         //procedimiento para meter al paciente en la salaVacunacion
         //Aquí hay que meter al paciente en un puesto
         try {
-            colaEspera.put(p); //Se mete al paciente en la cola
+            colaEspera.put(paciente); //Se mete al paciente en la cola
         } catch (InterruptedException ex) {
             Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
         }

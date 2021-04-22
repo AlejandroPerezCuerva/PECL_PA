@@ -1,5 +1,4 @@
 
-
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -25,7 +24,7 @@ public class Sanitario extends Thread {
         this.contadoresSanitarios = contadoresSanitarios;
         for (int i = 0; i < 10; i++) {
             contadoresSanitarios.add(new AtomicInteger(0));
-        } 
+        }
     }
 
     public void run() {
@@ -33,7 +32,7 @@ public class Sanitario extends Thread {
         salaDescanso.cambiarseSanitario(this);
         //Ahora los sanitarios se tienen que ir a la sala de vacunación para meterse cada uno en su puesto
         while (true) {
-
+            salaVacunacion.colocarSanitarios(this);
         }
     }
 
@@ -44,14 +43,15 @@ public class Sanitario extends Thread {
     public void setContadoresSanitarios(ArrayList<AtomicInteger> contadoresSanitarios) {
         this.contadoresSanitarios = contadoresSanitarios;
     }
-    
-    public void vacunar(){
+
+    public void vacunar() {
         try {
-            this.sleep((int)(3000*Math.random()+2000));
+            this.sleep((int) (3000 * Math.random() + 2000));
         } catch (InterruptedException ex) {
             Logger.getLogger(Sanitario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     @Override
     public String toString() {
         return id;

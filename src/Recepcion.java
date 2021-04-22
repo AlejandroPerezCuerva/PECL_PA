@@ -38,6 +38,9 @@ public class Recepcion {
     //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
     public void meterColaEspera(Paciente paciente) {
         colaEspera.offer(paciente); //Se mete al paciente en la cola
+        synchronized(colaEspera){
+            colaEspera.notify();
+        }
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
     }
 
@@ -48,13 +51,15 @@ public class Recepcion {
 
     //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
     public void registrarPacientes(Auxiliar auxiliar1) {
-        if (!colaEspera.isEmpty()) {
-            //Primero ponemos el contador del auxiliar 1 a 0
-            auxiliar1.getContadorAux1().set(0);
-            //Mientras el contador del auxiliar 1 sea menor que 10, sigue registrando pacientes
-            while (auxiliar1.getContadorAux1().getAndIncrement() <= 10) { //Comprobamos e incrementamos a la vez
-                //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
-                auxiliarRecepcion.setText(auxiliar1.toString());
+        //El auxiliar se pone en su puesto cuando llega por primera vez o viene de un descanso
+        auxiliarRecepcion.setText(auxiliar1.toString());
+        //Primero ponemos el contador del auxiliar 1 a 0
+        auxiliar1.getContadorAux1().set(0);
+        
+        System.out.println("Num aleatorio: " + numeroGanador);
+        while (!colaEspera.isEmpty() && auxiliar1.getContadorAux1().getAndIncrement() <= 10) {
+            //Mientras la cola no esté vacía y el contador sea menor que 10, se sigue registrando pacientes
+                
                 try {
                     Paciente paciente = (Paciente) colaEspera.poll(); //Con esto lo saca de la cola y lo borra
                     pacienteRecepcion.setText(paciente.toString());
@@ -68,12 +73,17 @@ public class Recepcion {
                     } else {
                         salaObservacion.salirHospital(paciente);
                     }
+                    
+                    synchronized(colaEspera){
+                        colaEspera.wait();
+                    }
 
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            
             //Si el contador no llega a 100 se le suma uno, si llega a 100 se pone a 0 y se elige el próximo paciente que no será registrado
+            //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
             if (contadorRegistrar.get() < 100) {
                 contadorRegistrar.getAndIncrement();
             } else {
