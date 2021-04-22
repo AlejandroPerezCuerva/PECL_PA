@@ -19,7 +19,6 @@ public class SalaVacunacion {
     private AtomicInteger contadorVacunas = new AtomicInteger(0);
     private SalaObservacion salaObservacion;    //Sala necesaria para que los pacientes pasen de vacunar a observar
     private BlockingQueue colaEspera = new LinkedBlockingDeque();//Cola de espera hasta que el auxiliar indique a que puesto ir
-    
     public SalaVacunacion(int max, JTextField auxiliarVacunacion, JTextField numeroVacunas) {
         this.max = max;
         for (int i = 0; i < max; i++) {
@@ -29,9 +28,26 @@ public class SalaVacunacion {
         this.auxiliarVacunacion = auxiliarVacunacion;
         this.numeroVacunas = numeroVacunas;
     }
-
+    
+    public ArrayList<Puesto> getPuestos(){
+        return puestos;
+    }
+    
+    public boolean puestoLibre(){
+        boolean resultado=false;
+        for (int i = 0; i < puestos.size(); i++) {
+            resultado=resultado || puestos.get(i).isDisponible();//falso o dispoible ->true, falso o no disponible ->false
+        }
+        return resultado;
+    }
+    
     //Método para el auxiliar 2, genera 20 dosis con el periodo indicado. Tiene un contador que llega hasta 20
-    public void introducirDosis(Auxiliar auxiliar2) {   /****Hacer de introducirDosis el run de A2?          *****/
+    /***
+     * En introducirDosis comprobar simultaneamente que haya hueco en Vacunacion y Observacion, cuando haya en ambos
+     * toma un permiso de ambos semáforos  y ocupa primero el puesto de vacunación y cuando acabe el de observación
+     *  
+     ***/
+    public void introducirDosis(Auxiliar auxiliar2) {   
         //Primero ponemos el contador del auxiliar 2 a 0
         auxiliar2.getContadorAux2().set(0);
         while (auxiliar2.getContadorAux2().incrementAndGet() <= 20) { //Comprobamos el contador y lo incrementamos
@@ -45,10 +61,10 @@ public class SalaVacunacion {
         auxiliarVacunacion.setText(""); //Actualizamos el JTextField cuando el auxiliar se va a descansar
     }
     
-    public void entraPaciente(Paciente paciente){
+    public void entraPaciente(Paciente p){
         //procedimiento para meter al paciente en la salaVacunacion
         try {
-            colaEspera.put(paciente); //Se mete al paciente en la cola
+            colaEspera.put(p); //Se mete al paciente en la cola
         } catch (InterruptedException ex) {
             Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -59,3 +75,4 @@ public class SalaVacunacion {
         salaObservacion.entraPaciente(p);
     }
 }
+
