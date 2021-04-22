@@ -23,7 +23,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
         //Insertamos todos los JTextField necesarios de Recepion
-        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion);
+        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
 
         //Insertamos todos los JTextField necesarios de SalaDescanso
         salaDescanso = new SalaDescanso(colaSalaDescanso);
@@ -350,7 +350,9 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(puesto8, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(39, 39, 39)
                                 .addComponent(puesto9, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(375, 375, 375)))
+                                .addGap(53, 53, 53)
+                                .addComponent(puesto10, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(220, 220, 220)))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(numeroVacunas, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18))
@@ -373,9 +375,7 @@ public class Main extends javax.swing.JFrame {
                                             .addComponent(jLabel3)
                                             .addGroup(jPanel3Layout.createSequentialGroup()
                                                 .addGap(60, 60, 60)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(puesto10, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                                     .addGroup(jPanel3Layout.createSequentialGroup()
                                         .addGap(168, 168, 168)
                                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

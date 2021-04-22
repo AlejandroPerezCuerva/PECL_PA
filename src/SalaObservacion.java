@@ -18,11 +18,12 @@ public class SalaObservacion {
         }
     }
     
-    public void entraPaciente(Paciente p){
+    public void entraPaciente(Paciente paciente){
         //procedimiento para que el paciente entre en la sala de observacion
     }
     
-    public void salePaciente(Paciente p){
+    public void salePaciente(Paciente paciente){
         //procedimiento para que el paciente se vaya a casa
+        System.out.println("Paciente: " + paciente.toString() + " sale del hospital");
     }
 }

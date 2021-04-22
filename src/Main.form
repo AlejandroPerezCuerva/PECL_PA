@@ -252,7 +252,9 @@
                                   <Component id="puesto8" min="-2" pref="76" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                                   <Component id="puesto9" min="-2" pref="114" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="375" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                                  <Component id="puesto10" min="-2" pref="102" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="220" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -281,10 +283,7 @@
                                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                               <Group type="102" alignment="0" attributes="0">
                                                   <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                                                  <Group type="103" groupAlignment="0" attributes="0">
-                                                      <Component id="jLabel16" max="32767" attributes="0"/>
-                                                      <Component id="puesto10" min="-2" pref="128" max="-2" attributes="0"/>
-                                                  </Group>
+                                                  <Component id="jLabel16" max="32767" attributes="0"/>
                                               </Group>
                                           </Group>
                                       </Group>

@@ -19,6 +19,7 @@ public class SalaVacunacion {
     private AtomicInteger contadorVacunas = new AtomicInteger(0);
     private SalaObservacion salaObservacion;    //Sala necesaria para que los pacientes pasen de vacunar a observar
     private BlockingQueue colaEspera = new LinkedBlockingDeque();//Cola de espera hasta que el auxiliar indique a que puesto ir
+    
     public SalaVacunacion(int max, JTextField auxiliarVacunacion, JTextField numeroVacunas) {
         this.max = max;
         for (int i = 0; i < max; i++) {
@@ -44,10 +45,10 @@ public class SalaVacunacion {
         auxiliarVacunacion.setText(""); //Actualizamos el JTextField cuando el auxiliar se va a descansar
     }
     
-    public void entraPaciente(Paciente p){
+    public void entraPaciente(Paciente paciente){
         //procedimiento para meter al paciente en la salaVacunacion
         try {
-            colaEspera.put(p); //Se mete al paciente en la cola
+            colaEspera.put(paciente); //Se mete al paciente en la cola
         } catch (InterruptedException ex) {
             Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
         }
