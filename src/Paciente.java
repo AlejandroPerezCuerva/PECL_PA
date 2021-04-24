@@ -25,14 +25,15 @@ public class Paciente extends Thread {
         try {//sleep antes de entrar a recepcion y evitar CrearPacientes? //Si se hace un sleep aqui el problema es que se crean los 2000 pacientes de golpe y 
             //todos hacen un sleep y entran a la vez, por eso hay que crear una clase de CrearPacientes
             recepcion.meterColaEspera(this);
-            
+
             //Esperamos mientras el auxliar nos indica al puesto que tenemos que ir o si no tenemos cita
             synchronized (this.registrado) {
                 this.registrado.wait();
             }
-
+            
+            //Una vez registrados pasamos al puesto de vacunación o a la calle porque no ha acudido sin cita
             if (registrado.get()) {
-                
+
             }
         } catch (Exception e) {
             System.out.println("La has liado");
