@@ -69,16 +69,15 @@ public class SalaVacunacion {
 
     //Los sanitarios se colocan en el puesto que tengan libre
     public void colocarSanitarios(Sanitario sanitario) {
-        for (int i = 0; i < puestos.size(); i++) {
+        int i = 0;
+        // Hacemos un bucle para que el sanitario elija puesto, una vez elegido el puesto se queda interrumpido para que salga del bucle while y solo ocupe un puesto
+        while (!sanitario.isInterrupted() && i < puestos.size()) {
             if (puestos.get(i).isDisponible()) {
-                try {
-                    puestos.get(i).entraSanitario();
-                    puestos.get(i).getJtfPuesto().setText(sanitario.toString());
-                    sanitario.currentThread().sleep(3000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                puestos.get(i).entraSanitario();
+                puestos.get(i).getJtfPuesto().setText(sanitario.toString());
+                sanitario.interrupt(); //Controlamos el comportamiento del sanitario
             }
+            i++;
         }
     }
 

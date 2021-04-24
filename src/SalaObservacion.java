@@ -10,11 +10,14 @@ public class SalaObservacion {
 
     private int max, puestoLibre;
     private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
+    private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
 
-    public SalaObservacion(int max) {
+    public SalaObservacion(int max, ArrayList<JTextField> puestosObservacion) {
         this.max = max;
+        this.puestosObservacion = puestosObservacion;
+        //Añadimos los puestos de observación a un array de la clase puestos para tener un mayor control sobre ellos
         for (int i = 0; i < max; i++) {
-            Puesto nuevoPuesto = new Puesto(new JTextField(), true);
+            Puesto nuevoPuesto = new Puesto(puestosObservacion.get(i), true);
             puestos.add(nuevoPuesto);
         }
     }

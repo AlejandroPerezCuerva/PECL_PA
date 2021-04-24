@@ -18,6 +18,7 @@ public class Main extends javax.swing.JFrame {
     private AtomicInteger contadorAux2 = new AtomicInteger(0); //Hacen falta dos contadores porque sino se hace referencia al mismo
     private ArrayList<AtomicInteger> contadoresSanitarios = new ArrayList<>(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
     private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>();
+    private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
 
     /**
      * Creates new form Main
@@ -37,6 +38,29 @@ public class Main extends javax.swing.JFrame {
         puestosVacunacion.add(puesto9);
         puestosVacunacion.add(puesto10);
         
+        //Es mas fácil tener todos los JTextFiel en un array que pasarlos y utilizarlos uno por uno
+        puestosObservacion.add(puestoO1);
+        puestosObservacion.add(puestoO2);
+        puestosObservacion.add(puestoO3);
+        puestosObservacion.add(puestoO4);
+        puestosObservacion.add(puestoO5);
+        puestosObservacion.add(puestoO6);
+        puestosObservacion.add(puestoO7);
+        puestosObservacion.add(puestoO8);
+        puestosObservacion.add(puestoO9);
+        puestosObservacion.add(puestoO10);
+        puestosObservacion.add(puestoO11);
+        puestosObservacion.add(puestoO12);
+        puestosObservacion.add(puestoO13);
+        puestosObservacion.add(puestoO14);
+        puestosObservacion.add(puestoO15);
+        puestosObservacion.add(puestoO16);
+        puestosObservacion.add(puestoO17);
+        puestosObservacion.add(puestoO18);
+        puestosObservacion.add(puestoO19);
+        puestosObservacion.add(puestoO20);
+        
+        
         //Insertamos todos los JTextField necesarios de Recepion
         recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
 
@@ -47,7 +71,7 @@ public class Main extends javax.swing.JFrame {
         salaVacunacion = new SalaVacunacion(10, auxiliarVacunacion, numeroVacunas, puestosVacunacion);
 
         //Insertamos todos los JTextField necesarios de SalaVacunacion
-        salaObservacion = new SalaObservacion(20);
+        salaObservacion = new SalaObservacion(20, puestosObservacion);
 
         //Inicializamos crearPacientes y le pasamos los parámetros necesarios que necesitan los pacientes
         crearPacientes = new CrearPacientes(recepcion);

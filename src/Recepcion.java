@@ -38,7 +38,7 @@ public class Recepcion {
     //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
     public void meterColaEspera(Paciente paciente) {
         colaEspera.offer(paciente); //Se mete al paciente en la cola
-        synchronized(colaEspera){
+        synchronized (colaEspera) {
             colaEspera.notify();
         }
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
@@ -55,45 +55,48 @@ public class Recepcion {
         auxiliarRecepcion.setText(auxiliar1.toString());
         //Primero ponemos el contador del auxiliar 1 a 0
         auxiliar1.getContadorAux1().set(0);
-        
+
         System.out.println("Num aleatorio: " + numeroGanador);
         while (!colaEspera.isEmpty() && auxiliar1.getContadorAux1().getAndIncrement() <= 10) {
             //Mientras la cola no esté vacía y el contador sea menor que 10, se sigue registrando pacientes
-                
-                try {
-                    Paciente paciente = (Paciente) colaEspera.poll(); //Con esto lo saca de la cola y lo borra
-                    pacienteRecepcion.setText(paciente.toString());
-                    colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
-                    auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
+            try {
+                Paciente paciente = (Paciente) colaEspera.poll(); //Con esto lo saca de la cola y lo borra
+                pacienteRecepcion.setText(paciente.toString());
+                colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
+                auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
 
-                    //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
-                    if (paciente.getNumero() != numeroGanador) {
-                        //Aquí falla, no se va a la sala de vacunacion
-                        salaVacunacion.entraPaciente(paciente);
-                    } else {
-                        salaObservacion.salirHospital(paciente);
-                    }
-                    
-                    synchronized(colaEspera){
-                        colaEspera.wait();
-                    }
-
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
+                //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
+                if (paciente.getNumero() != numeroGanador) {
+                    //Aquí falla, no se va a la sala de vacunacion
+                    salaVacunacion.entraPaciente(paciente);
+                } else {
+                    salaObservacion.salirHospital(paciente);
                 }
-            
-            //Si el contador no llega a 100 se le suma uno, si llega a 100 se pone a 0 y se elige el próximo paciente que no será registrado
-            //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
-            if (contadorRegistrar.get() < 100) {
-                contadorRegistrar.getAndIncrement();
-            } else {
-                contadorRegistrar.set(0);
-                numeroGanador = (int) (100 * Math.random()) + 1; //Elegimos otro número
-                numeroGanador = numeroGanador + sumador; //Con esto se eligen numeros en rangos de 100 para tener así un 1% exacto en cada 100 pacientes
+
+                synchronized (colaEspera) {
+                    colaEspera.wait();
+                }
+
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
             }
+            elegirPacienteParaEchar();
             auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
         }
 
+    }
+
+    //Se deja en un método el elegir un número para saber a que paciente no pasa el registro en la recepción
+    public void elegirPacienteParaEchar() {
+        //Si el contador no llega a 100 se le suma uno, si llega a 100 se pone a 0 y se elige el próximo paciente que no será registrado
+        //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
+        if (contadorRegistrar.get() < 100) {
+            contadorRegistrar.getAndIncrement();
+        } else {
+            contadorRegistrar.set(0);
+            numeroGanador = (int) (100 * Math.random()) + 1; //Elegimos otro número
+            numeroGanador = numeroGanador + sumador; //Con esto se eligen numeros en rangos de 100 para tener así un 1% exacto en cada 100 pacientes
+        }
     }
 
 }
