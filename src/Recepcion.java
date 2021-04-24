@@ -51,6 +51,7 @@ public class Recepcion {
 
     //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
     public void registrarPacientes(Auxiliar auxiliar1) {
+
         //El auxiliar se pone en su puesto cuando llega por primera vez o viene de un descanso
         auxiliarRecepcion.setText(auxiliar1.toString());
         //Primero ponemos el contador del auxiliar 1 a 0
@@ -67,10 +68,15 @@ public class Recepcion {
 
                 //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
                 if (paciente.getNumero() != numeroGanador) {
-                    //Aquí falla, no se va a la sala de vacunacion
-                    salaVacunacion.entraPaciente(paciente);
+                    paciente.getRegistrado().set(true);
+                    System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " );
+                    synchronized (paciente.getRegistrado()) {
+                        paciente.getRegistrado().notify();
+                    }
+
                 } else {
-                    salaObservacion.salirHospital(paciente);
+                    paciente.getRegistrado().set(false);
+                    System.out.println("Paciente " + paciente.toString() + " ha acudido sin cita");
                 }
 
                 synchronized (colaEspera) {
@@ -81,9 +87,8 @@ public class Recepcion {
                 Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
             }
             elegirPacienteParaEchar();
-            auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
         }
-
+        auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
     }
 
     //Se deja en un método el elegir un número para saber a que paciente no pasa el registro en la recepción
