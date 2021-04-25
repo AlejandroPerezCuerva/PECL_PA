@@ -19,15 +19,17 @@ public class CrearPacientes extends Thread {
 
     private Recepcion recepcion;
     private ExecutorService pool = Executors.newCachedThreadPool(); //Se crean los hilos con un pool para luego poder controlar la vida de ellos 
+    private SalaVacunacion salaVacunacion;
 
-    public CrearPacientes(Recepcion recepcion) {
+    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion) {
         this.recepcion = recepcion;
+        this.salaVacunacion = salaVacunacion;
     }
 
     public void run() {
         //Se crean los 2000 pacientes con un sleep de 1 a 3 segundos de forma aleatoria para que entren de forma ordenada y escalonada
         for (int i = 0; i < 2000; i++) {
-            Paciente pacienteNuevo = new Paciente(i, recepcion);
+            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion);
             try {
                 sleep((int) (2000 * Math.random() + 1000)); //Los pacientes esperan entre 1 y 3 segundos para llegar de forma escalonada
             } catch (InterruptedException ex) {

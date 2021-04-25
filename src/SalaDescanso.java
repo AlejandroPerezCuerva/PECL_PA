@@ -48,13 +48,13 @@ public class SalaDescanso {
         System.out.println("Auxiliar " + auxiliar + " termina su descanso");
     }
     
-    public void descansoSanitarios(Sanitario sanitario){
+    public void descansoSanitarios(Sanitario sanitario, int maximo, int minimo){
         System.out.println("Sanitario " + sanitario + " empieza su descanso");
         try {
             //Primero se meten, hacen el sleep y luego salen a sus puestos
             colaSala.put(sanitario);
             colaSalaDescanso.setText(colaSala.toString());
-            sleep((int) (3000 * Math.random() + 5000)); //Sleep de 5 a 8 segundos que es lo que tardan en descansar
+            sleep((int) ((maximo-minimo) * Math.random() + minimo)); //Sleep de 5 a 8 segundos que es lo que tardan en descansar
             colaSala.take();
             colaSalaDescanso.setText(colaSala.toString()); //Se actualiza el JTextFiel con los Sanitarios que han ido saliendo
         } catch (Exception e) {

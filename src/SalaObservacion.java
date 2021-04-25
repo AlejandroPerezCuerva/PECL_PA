@@ -1,5 +1,8 @@
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTextField;
 
 /**
@@ -11,19 +14,17 @@ public class SalaObservacion {
     private int max, puestoLibre;
     private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
+    private Semaphore capacidadObservacion; //Semaforo con la capacidad máxima de la sala de observacion
 
     public SalaObservacion(int max, ArrayList<JTextField> puestosObservacion) {
         this.max = max;
         this.puestosObservacion = puestosObservacion;
         //Añadimos los puestos de observación a un array de la clase puestos para tener un mayor control sobre ellos
         for (int i = 0; i < max; i++) {
-            Puesto nuevoPuesto = new Puesto(puestosObservacion.get(i), true);
+            Puesto nuevoPuesto = new Puesto(puestosObservacion.get(i), true, true);
             puestos.add(nuevoPuesto);
         }
-    }
-
-    public ArrayList<Puesto> getPuestos() {
-        return puestos;
+        this.capacidadObservacion = new Semaphore(max); //Se inicializa el semaforo con la capacidad máxima de aforo
     }
 
     public boolean puestoLibre() {
@@ -38,19 +39,58 @@ public class SalaObservacion {
     }
 
     public void entraPaciente(Paciente paciente) {
-        //procedimiento para que el paciente entre en la sala de observacion
-        if (puestoLibre()) {
-            puestos.get(puestoLibre).entraPaciente(paciente);
+        try {
+            capacidadObservacion.acquire(); //Entra el paciente y el semaforo hace aquire
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void salePaciente(int puesto) {
-        //procedimiento para que el paciente se vaya a casa
-        System.out.println("Paciente: " + puestos.get(puesto).toString() + " sale del hospital");
-        puestos.get(puesto).salePaciente();
+    public void salePaciente() {
+        capacidadObservacion.release();
+        synchronized (capacidadObservacion) {
+            capacidadObservacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de observación
+        }
     }
 
-    public void salirHospital(Paciente paciente) {
-        System.out.println("Paciente: " + paciente.toString() + " sale del hospital");
+    public int getMax() {
+        return max;
     }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public int getPuestoLibre() {
+        return puestoLibre;
+    }
+
+    public void setPuestoLibre(int puestoLibre) {
+        this.puestoLibre = puestoLibre;
+    }
+
+    public ArrayList<Puesto> getPuestos() {
+        return puestos;
+    }
+
+    public void setPuestos(ArrayList<Puesto> puestos) {
+        this.puestos = puestos;
+    }
+
+    public ArrayList<JTextField> getPuestosObservacion() {
+        return puestosObservacion;
+    }
+
+    public void setPuestosObservacion(ArrayList<JTextField> puestosObservacion) {
+        this.puestosObservacion = puestosObservacion;
+    }
+
+    public Semaphore getCapacidadObservacion() {
+        return capacidadObservacion;
+    }
+
+    public void setCapacidadObservacion(Semaphore capacidadObservacion) {
+        this.capacidadObservacion = capacidadObservacion;
+    }
+
 }

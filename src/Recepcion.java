@@ -68,8 +68,33 @@ public class Recepcion {
 
                 //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
                 if (paciente.getNumero() != numeroGanador) {
+                    //Mientras no haya huecos en las salas de observación y vacunación se espera
+                    
+                    while (!salaVacunacion.getCapacidadVacunacion().tryAcquire()) {
+                        System.out.println("Funcionaaaaaaaa");
+                        synchronized (salaVacunacion.getCapacidadVacunacion()) {
+                            salaVacunacion.getCapacidadVacunacion().wait();
+                        }
+                    }
+                    //Configurar bien el while de espera
+                    
+                    int i = 0;
+                    boolean puestoObtenido = false;
+                    String sanitario = "";
+                    String jText = "";
+                    while (!puestoObtenido && i < salaVacunacion.getPuestos().size()) {
+                        if (salaVacunacion.getPuestos().get(i).isDisponiblePaciente()) {
+                            jText = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText();
+                            salaVacunacion.getPuestos().get(i).setDisponiblePaciente(false);
+                            paciente.setPuesto(i + 1); //El puesto será el número del Puesto que coge
+                            sanitario = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText(); //Obtenemos el sanitario que le va a vacunar
+                            puestoObtenido = true;
+                            salaVacunacion.getPuestos().get(i).getJtfPuesto().setText(jText + ", " + paciente.toString());
+                        }
+                        i++;
+                    }
                     paciente.getRegistrado().set(true);
-                    System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " );
+                    System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + paciente.getPuesto() + " por " + sanitario);
                     synchronized (paciente.getRegistrado()) {
                         paciente.getRegistrado().notify();
                     }

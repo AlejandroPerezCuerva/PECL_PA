@@ -14,17 +14,16 @@ public class Sanitario extends Thread {
     private SalaDescanso salaDescanso; //Se le pasa como parámetro porque necesita acceder a ella
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
-    private ArrayList<AtomicInteger> contadoresSanitarios;
+    private AtomicInteger contadoresSanitarios;
+    private int puesto;
 
-    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
+    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, AtomicInteger contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
         this.salaDescanso = salaDescanso;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
         this.contadoresSanitarios = contadoresSanitarios;
-        for (int i = 0; i < 10; i++) {
-            contadoresSanitarios.add(new AtomicInteger(0));
-        }
+        this.puesto = 0;
     }
 
     public void run() {
@@ -33,14 +32,18 @@ public class Sanitario extends Thread {
         //Ahora los sanitarios se tienen que ir a la sala de vacunación para meterse cada uno en su puesto
         while (true) {
             salaVacunacion.colocarSanitarios(this);
+            salaVacunacion.vacunarPaciente(this);
+            salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
+            
+            //Hay que poner un if para saver si hay un paciente que necesita ser revisado en observación
         }
     }
 
-    public ArrayList<AtomicInteger> getContadoresSanitarios() {
+    public AtomicInteger getContadoresSanitarios() {
         return contadoresSanitarios;
     }
 
-    public void setContadoresSanitarios(ArrayList<AtomicInteger> contadoresSanitarios) {
+    public void setContadoresSanitarios(AtomicInteger contadoresSanitarios) {
         this.contadoresSanitarios = contadoresSanitarios;
     }
 
@@ -56,5 +59,43 @@ public class Sanitario extends Thread {
     public String toString() {
         return id;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public SalaDescanso getSalaDescanso() {
+        return salaDescanso;
+    }
+
+    public void setSalaDescanso(SalaDescanso salaDescanso) {
+        this.salaDescanso = salaDescanso;
+    }
+
+    public SalaVacunacion getSalaVacunacion() {
+        return salaVacunacion;
+    }
+
+    public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
+        this.salaVacunacion = salaVacunacion;
+    }
+
+    public SalaObservacion getSalaObservacion() {
+        return salaObservacion;
+    }
+
+    public void setSalaObservacion(SalaObservacion salaObservacion) {
+        this.salaObservacion = salaObservacion;
+    }
+
+    public int getPuesto() {
+        return puesto;
+    }
+
+    public void setPuesto(int puesto) {
+        this.puesto = puesto;
+    }
+    
+    
 
 }

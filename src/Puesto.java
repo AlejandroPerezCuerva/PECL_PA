@@ -4,12 +4,13 @@ import javax.swing.JTextField;
 public class Puesto {
 
     private JTextField jtfPuesto;
-    private boolean disponible;
+    private boolean disponible, disponiblePaciente;
     private Paciente paciente;
 
-    public Puesto(JTextField jtfPuesto, boolean disponible) {
+    public Puesto(JTextField jtfPuesto, boolean disponible, boolean disponiblePaciente) {
         this.jtfPuesto = jtfPuesto;
         this.disponible = disponible;
+        this.disponiblePaciente = disponiblePaciente;
     }
 
     public JTextField getJtfPuesto() {
@@ -37,4 +38,13 @@ public class Puesto {
         paciente = null;
         disponible = true;
     }
+
+    public boolean isDisponiblePaciente() {
+        return disponiblePaciente;
+    }
+
+    public void setDisponiblePaciente(boolean disponiblePaciente) {
+        this.disponiblePaciente = disponiblePaciente;
+    }
+
 }
