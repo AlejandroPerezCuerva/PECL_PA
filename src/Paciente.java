@@ -10,7 +10,7 @@ public class Paciente extends Thread {
     private String id;
     private Recepcion recepcion; //Reciben la recepcion directamente del main para que sea la misma todo el rato
     private int numero;
-    private AtomicBoolean registrado;
+    private AtomicBoolean registrado, reaccionVacuna;
     private int puesto;
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
@@ -20,6 +20,7 @@ public class Paciente extends Thread {
         id = "P" + String.format("%04d", numero);
         this.recepcion = recepcion;
         this.registrado = new AtomicBoolean(false);
+        this.reaccionVacuna = new AtomicBoolean(false);
         this.puesto = 0;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
@@ -57,6 +58,14 @@ public class Paciente extends Thread {
         this.registrado = registrado;
     }
 
+    public AtomicBoolean getReaccionVacuna() {
+        return reaccionVacuna;
+    }
+
+    public void setReaccionVacuna(AtomicBoolean reaccionVacuna) {
+        this.reaccionVacuna = reaccionVacuna;
+    }
+    
     public int getPuesto() {
         return puesto;
     }
