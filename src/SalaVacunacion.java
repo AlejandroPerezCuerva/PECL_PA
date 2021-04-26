@@ -103,7 +103,8 @@ public class SalaVacunacion {
             Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    
     public void vacunarPaciente(Sanitario sanitario) {
         sanitario.interrupted(); // le quitamos el interrup al saniratio que se le ha puesto en colocar
         //Se resetea el contador cada vez que un sanitario va a empezar a vacunar
@@ -127,7 +128,7 @@ public class SalaVacunacion {
                 sleep((int) (2000 * Math.random() + 3000)); //El sanitario tarda entre 3 y 5 segundos en vacunar
                 capacidadVacunacion.release();
                 synchronized (capacidadVacunacion) {
-                    capacidadVacunacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de vacunacion
+                capacidadVacunacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de vacunacion
                 }
                 puestos.get(sanitario.getPuesto()).setDisponiblePaciente(true);
                 puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(sanitario.toString()); // se actualiza el JTextField para el siguiente paciente
