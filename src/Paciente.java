@@ -13,14 +13,16 @@ public class Paciente extends Thread {
     private AtomicBoolean registrado;
     private int puesto;
     private SalaVacunacion salaVacunacion;
+    private SalaObservacion salaObservacion;
 
-    public Paciente(int numero, Recepcion recepcion, SalaVacunacion salaVacunacion) {
+    public Paciente(int numero, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion) {
         this.numero = numero;
         id = "P" + String.format("%04d", numero);
         this.recepcion = recepcion;
         this.registrado = new AtomicBoolean(false);
-        this.puesto = 0; //Esto igual no hace falta
+        this.puesto = 0;
         this.salaVacunacion = salaVacunacion;
+        this.salaObservacion = salaObservacion;
     }
 
     public void run() {
@@ -32,11 +34,15 @@ public class Paciente extends Thread {
             synchronized (this.registrado) {
                 this.registrado.wait();
             }
-            
+
             //Una vez registrados pasamos al puesto de vacunación o a la calle porque no ha acudido sin cita
             if (registrado.get()) {
                 salaVacunacion.entraPaciente(this);
                 //Aquí viene la sala de observación para después de la vacuna
+                synchronized (this.registrado) {
+                    this.registrado.wait();
+                }
+                salaObservacion.entraPaciente(this);
             }
         } catch (Exception e) {
             System.out.println("La has liado");

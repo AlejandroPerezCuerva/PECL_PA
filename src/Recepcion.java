@@ -70,12 +70,12 @@ public class Recepcion {
                 if (paciente.getNumero() != numeroGanador) {
                     //Mientras no haya huecos en las salas de observación y vacunación se espera
                     
-                    while (!salaVacunacion.getCapacidadVacunacion().tryAcquire()) {
+                    /*while (!salaVacunacion.getCapacidadVacunacion().tryAcquire()) {
                         System.out.println("Funcionaaaaaaaa");
                         synchronized (salaVacunacion.getCapacidadVacunacion()) {
                             salaVacunacion.getCapacidadVacunacion().wait();
                         }
-                    }
+                    }*/
                     //Configurar bien el while de espera
                     
                     int i = 0;

@@ -120,11 +120,6 @@ public class SalaVacunacion {
                 }
             }
             //De esta manera los sanitarios esperan hasta que hay un paciente en su puesto 
-            try {
-                colaVacunar.take();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
             try {
                 contadorVacunas.decrementAndGet(); //El sanitario utiliza una vacuna
@@ -136,6 +131,15 @@ public class SalaVacunacion {
                 }
                 puestos.get(sanitario.getPuesto()).setDisponiblePaciente(true);
                 puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(sanitario.toString()); // se actualiza el JTextField para el siguiente paciente
+                try {
+                    Paciente paciente = (Paciente) colaVacunar.take();  //Cuando lo sacamos de la cola le avisamos para que se vaya al puesto de observacion
+                    synchronized (paciente.getRegistrado()) {
+                        paciente.getRegistrado().notify();
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             } catch (InterruptedException ex) {
                 Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
             }

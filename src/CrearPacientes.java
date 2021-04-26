@@ -16,20 +16,21 @@ public class CrearPacientes extends Thread {
     si se hace el sleep en pacientes el problema es que los 2000 pacientes se crean a la vez, hacen el sleep y los 2000 entran de golpe a la recepcion
     por eso hay que crear una clase para crear los pacientes y que se creen con un sleep para que lleguen de forma escalonada
      */
-
     private Recepcion recepcion;
     private ExecutorService pool = Executors.newCachedThreadPool(); //Se crean los hilos con un pool para luego poder controlar la vida de ellos 
     private SalaVacunacion salaVacunacion;
+    private SalaObservacion salaObservacion;
 
-    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion) {
+    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion) {
         this.recepcion = recepcion;
         this.salaVacunacion = salaVacunacion;
+        this.salaObservacion = salaObservacion;
     }
 
     public void run() {
         //Se crean los 2000 pacientes con un sleep de 1 a 3 segundos de forma aleatoria para que entren de forma ordenada y escalonada
         for (int i = 0; i < 2000; i++) {
-            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion);
+            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion, salaObservacion);
             try {
                 sleep((int) (2000 * Math.random() + 1000)); //Los pacientes esperan entre 1 y 3 segundos para llegar de forma escalonada
             } catch (InterruptedException ex) {

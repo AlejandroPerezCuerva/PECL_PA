@@ -1,4 +1,5 @@
 
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -39,8 +40,32 @@ public class SalaObservacion {
     }
 
     public void entraPaciente(Paciente paciente) {
+        
         try {
             capacidadObservacion.acquire(); //Entra el paciente y el semaforo hace aquire
+            int i = 0;
+            boolean puestoObtenido = false;
+            while (!puestoObtenido && i < puestos.size()) {
+                if (puestos.get(i).isDisponiblePaciente()) {
+                    puestos.get(i).setDisponiblePaciente(false);
+                    paciente.setPuesto(i);
+                    puestoObtenido = true;
+                    puestos.get(i).getJtfPuesto().setText(paciente.toString());
+                }
+                i++;
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //El paciente está en observación y un 5% se ponen malos y los sanitarios le cuidan
+    public void pacienteEnObservacion(Paciente paciente) {
+        try {
+            sleep(10000); //El paciente está 10 segundos es la observación 
+            puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
+            capacidadObservacion.release();
+            puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
         } catch (InterruptedException ex) {
             Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
         }
