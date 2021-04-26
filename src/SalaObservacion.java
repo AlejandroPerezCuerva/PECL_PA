@@ -58,25 +58,32 @@ public class SalaObservacion {
             Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     //El paciente está en observación y un 5% se ponen malos y los sanitarios le cuidan
     public void pacienteEnObservacion(Paciente paciente) {
+        boolean reaccion= (int) (100*Math.random())<=5; //En el 5% de los casos el paciente sufre efectos adversos
         try {
             sleep(10000); //El paciente está 10 segundos es la observación 
+            if (reaccion) {
+                puestos.get(paciente.getPuesto()).getAtendido().set(false);//El puesto necesita ser atendido
+                paciente.getReaccionVacuna().set(true);//El paciente tiene una reaccion a la vacuna
+                while(paciente.getReaccionVacuna().equals(true)){//Mientras el sanitario no determine que no tiene reaccion espera
+                try{
+                    wait();
+                }catch(Exception e){}
+                }
+            }
             puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
             capacidadObservacion.release();
             puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
+            synchronized (capacidadObservacion) {
+            capacidadObservacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de observación
+        }
         } catch (InterruptedException ex) {
             Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void salePaciente() {
-        capacidadObservacion.release();
-        synchronized (capacidadObservacion) {
-            capacidadObservacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de observación
-        }
-    }
 
     public int getMax() {
         return max;
