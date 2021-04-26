@@ -14,6 +14,7 @@ public class SalaDescanso {
 
     private JTextArea colaSalaDescanso;
     private BlockingQueue colaSala = new LinkedBlockingDeque();
+    private SalaVacunacion salaVacunacion;
 
     public SalaDescanso(JTextArea colaSalaDescanso) {
         this.colaSalaDescanso = colaSalaDescanso;
@@ -57,9 +58,24 @@ public class SalaDescanso {
             sleep((int) ((maximo-minimo) * Math.random() + minimo)); //Sleep de 5 a 8 segundos que es lo que tardan en descansar
             colaSala.take();
             colaSalaDescanso.setText(colaSala.toString()); //Se actualiza el JTextFiel con los Sanitarios que han ido saliendo
+            if (false) {//Si hay que atender al paciente
+                atenderPaciente(sanitario, 0); //Hay que pasar el numero del puesto real
+            }
         } catch (Exception e) {
         }
         System.out.println("Sanitario " + sanitario + " termina su descanso");        
+    }
+    
+    public void atenderPaciente(Sanitario sanitario, int puesto){
+        if(salaVacunacion.getPuestos().get(puesto).getAtendido().equals(false)){//Si el puesto no esta siendo atendido por nadie
+            salaVacunacion.getPuestos().get(puesto).getAtendido().set(true);//Se indica que el puesto esta siendo atendido a otros sanitarios
+            try {
+                wait((int)(3000*Math.random()+2000));//Tarda entre 2 y 5 segundos
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SalaDescanso.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            salaVacunacion.getPuestos().get(puesto).getPaciente().getReaccionVacuna().set(false);//El sanitario indica que no hay problema con el paciente
+        }
     }
 
 }
