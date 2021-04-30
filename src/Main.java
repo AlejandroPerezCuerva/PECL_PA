@@ -16,7 +16,7 @@ public class Main extends javax.swing.JFrame {
     private SalaObservacion salaObservacion; //Inicializamos la sala de observacion y le pasamos los JTextFields correspondientes
     private AtomicInteger contadorAux1 = new AtomicInteger(0); //Se utiliza un atomic porque es mas seguro que un int normal, lo utilizamos de contador
     private AtomicInteger contadorAux2 = new AtomicInteger(0); //Hacen falta dos contadores porque sino se hace referencia al mismo
-    private AtomicInteger contadoresSanitarios = new AtomicInteger(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
+    private ArrayList<AtomicInteger> contadoresSanitarios = new ArrayList<>(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
     private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>();
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
 
@@ -64,10 +64,10 @@ public class Main extends javax.swing.JFrame {
         salaVacunacion = new SalaVacunacion(10, auxiliarVacunacion, numeroVacunas, puestosVacunacion);
         
         //Insertamos todos los JTextField necesarios de SalaVacunacion
-        salaObservacion = new SalaObservacion(20, puestosObservacion);
+        salaObservacion = new SalaObservacion(20, puestosObservacion, salidaTextField);
         
         //Insertamos todos los JTextField necesarios de Recepion
-        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
+        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion);
 
         //Insertamos todos los JTextField necesarios de SalaDescanso
         salaDescanso = new SalaDescanso(colaSalaDescanso);
@@ -77,6 +77,8 @@ public class Main extends javax.swing.JFrame {
         crearPacientes.start();
 
         for (int i = 0; i < 10; i++) {
+            AtomicInteger nuevoContador = new AtomicInteger(0);
+            contadoresSanitarios.add(nuevoContador); //Inicializamos todos los contadores a 0
             Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios); //Todos los parámetros necesarios para los sanitarios
             sanitarioNuevo.start();
         }
@@ -85,7 +87,6 @@ public class Main extends javax.swing.JFrame {
         Auxiliar a2 = new Auxiliar(2, contadorAux2, salaVacunacion, salaDescanso);
         a1.start();
         a2.start();
-
     }
 
     /**
@@ -178,6 +179,9 @@ public class Main extends javax.swing.JFrame {
         puestoO18 = new javax.swing.JTextField();
         puestoO19 = new javax.swing.JTextField();
         puestoO20 = new javax.swing.JTextField();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel40 = new javax.swing.JLabel();
+        salidaTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hospital de Vacunación");
@@ -715,7 +719,32 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(puestoO18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(puestoO19, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(puestoO20, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jLabel40.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        jLabel40.setText("Salida del hospital");
+
+        salidaTextField.setEditable(false);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(463, 463, 463)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(salidaTextField)
+                    .addComponent(jLabel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jLabel40)
+                .addGap(12, 12, 12)
+                .addComponent(salidaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -730,7 +759,8 @@ public class Main extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -744,7 +774,9 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -861,6 +893,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -870,6 +903,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField numeroVacunas;
@@ -904,5 +938,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField puestoO7;
     private javax.swing.JTextField puestoO8;
     private javax.swing.JTextField puestoO9;
+    private javax.swing.JTextField salidaTextField;
     // End of variables declaration//GEN-END:variables
 }

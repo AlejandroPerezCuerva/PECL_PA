@@ -1,7 +1,9 @@
 
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,7 +23,7 @@ public class SalaVacunacion {
     private JTextField auxiliarVacunacion, numeroVacunas;
     private AtomicInteger contadorVacunas = new AtomicInteger(0);
     private SalaObservacion salaObservacion;    //Sala necesaria para que los pacientes pasen de vacunar a observar
-    private BlockingQueue colaVacunar = new LinkedBlockingDeque(); //Cola de espera hasta que el auxiliar indique a que puesto ir
+    private Queue<Paciente> colaVacunar = new ConcurrentLinkedQueue<Paciente>();
 
     private Semaphore capacidadVacunacion; //Semaforo con la capacidad máxima de la sala de vacunación
 
@@ -76,12 +78,13 @@ public class SalaVacunacion {
     public void colocarSanitarios(Sanitario sanitario) {
         int i = 0;
         // Hacemos un bucle para que el sanitario elija puesto, una vez elegido el puesto se queda interrumpido para que salga del bucle while y solo ocupe un puesto
-        while (!sanitario.isInterrupted() && i < puestos.size()) {
+        boolean puestoSanitarioObtenido = false;
+        while (!puestoSanitarioObtenido && i < puestos.size()) {
             if (puestos.get(i).isDisponible()) {
                 puestos.get(i).entraSanitario();
                 puestos.get(i).getJtfPuesto().setText(sanitario.toString());
                 sanitario.setPuesto(i);
-                sanitario.interrupt(); //Controlamos el comportamiento del sanitario
+                puestoSanitarioObtenido = true;
             }
             i++;
         }
@@ -90,11 +93,15 @@ public class SalaVacunacion {
     public void entraPaciente(Paciente paciente) {
         //procedimiento para meter al paciente en la salaVacunacion
         //Aquí hay que meter al paciente en un puesto
+        String pacientePuesto = puestos.get(paciente.getPuesto()).getJtfPuesto().getText();
+        pacientePuesto = pacientePuesto + "," + paciente.toString();
+        puestos.get(paciente.getPuesto() - 1).getJtfPuesto().setText(pacientePuesto);
+
         try {
             //Semaforo porque solo puede haber 10 como mucho en la cola porque se estarán vacunando
             capacidadVacunacion.acquire(); //Igual no hace falta ni la cola porque con el semaforo es suficiente
 
-            colaVacunar.put(paciente); //Se mete al paciente en la cola
+            colaVacunar.offer(paciente); //Se mete al paciente en la cola
             synchronized (colaVacunar) {
                 colaVacunar.notifyAll();//Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de vacunacion
 
@@ -103,14 +110,13 @@ public class SalaVacunacion {
             Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
     public void vacunarPaciente(Sanitario sanitario) {
-        sanitario.interrupted(); // le quitamos el interrup al saniratio que se le ha puesto en colocar
         //Se resetea el contador cada vez que un sanitario va a empezar a vacunar
-        sanitario.getContadoresSanitarios().set(0);
+        sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).set(0); //Solucinado el problema de los contadores de los sanitarios porque cada sanitario tiene que tener un contador individual
+
         //Mientras haya vacunas y el contador de los sanitarios no llegue a 
-        while (contadorVacunas.get() > 1 && sanitario.getContadoresSanitarios().getAndIncrement() < 15) {
+        while (sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).getAndIncrement() <= 15) {
             while (colaVacunar.isEmpty()) {
                 synchronized (colaVacunar) {
                     try {
@@ -125,26 +131,23 @@ public class SalaVacunacion {
             try {
                 contadorVacunas.decrementAndGet(); //El sanitario utiliza una vacuna
                 //Igual hacer un wait si no hay vacunas disponibles en vez de dejarlo en el while
-                sleep((int) (2000 * Math.random() + 3000)); //El sanitario tarda entre 3 y 5 segundos en vacunar
+                sanitario.currentThread().sleep((int) (2000 * Math.random() + 3000)); //El sanitario tarda entre 3 y 5 segundos en vacunar
+
+                Paciente paciente = colaVacunar.poll();  //Lo sacamos de la lista y luego se hace el release
+                puestos.get(sanitario.getPuesto()).setDisponiblePaciente(true); //Se queda libre el puesto del paciente para que pueda entrar otro
+                puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(sanitario.toString()); //Cuando va a salir de la sala de vacunación deja al sanitario solo para que atienda al siguiente paciente
+
+                //Cuando sale el paciente de la cola es cuando se hace el release
                 capacidadVacunacion.release();
                 synchronized (capacidadVacunacion) {
-                capacidadVacunacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de vacunacion
-                }
-                puestos.get(sanitario.getPuesto()).setDisponiblePaciente(true);
-                puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(sanitario.toString()); // se actualiza el JTextField para el siguiente paciente
-                try {
-                    Paciente paciente = (Paciente) colaVacunar.take();  //Cuando lo sacamos de la cola le avisamos para que se vaya al puesto de observacion
-                    synchronized (paciente.getRegistrado()) {
-                        paciente.getRegistrado().notify();
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
+                    capacidadVacunacion.notifyAll(); //Cuando se hace release se avisa al auxiliar 1 que hay hueco en la sala de vacunacion
                 }
 
-            } catch (InterruptedException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(SalaVacunacion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(""); //Cuando se va a descansar se pone el JTextField limpio
     }
 
     public int getMax() {
@@ -193,14 +196,6 @@ public class SalaVacunacion {
 
     public void setSalaObservacion(SalaObservacion salaObservacion) {
         this.salaObservacion = salaObservacion;
-    }
-
-    public BlockingQueue getColaVacunar() {
-        return colaVacunar;
-    }
-
-    public void setColaVacunar(BlockingQueue colaVacunar) {
-        this.colaVacunar = colaVacunar;
     }
 
     public Semaphore getCapacidadVacunacion() {

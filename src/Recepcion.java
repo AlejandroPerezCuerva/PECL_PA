@@ -18,19 +18,15 @@ public class Recepcion {
     private Queue<Paciente> colaEspera = new ConcurrentLinkedQueue<Paciente>(); //Elegimos este tipo de cola porque es el más cómodo de utilizar
 
     private SalaVacunacion salaVacunacion; //Sala necesaria para que los pacientes pasen de recepcion a vacunacion
-    private SalaObservacion salaObservacion; //Sala necesaria para los pacientes que no están registrados
-    private ListaThreads colaEspera2;
 
     private AtomicInteger contadorRegistrar = new AtomicInteger(0);
     private int numeroGanador, sumador;
 
-    public Recepcion(JTextArea colaRecepcion, JTextField pacienteRecepcion, JTextField auxiliarRecepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion) {
+    public Recepcion(JTextArea colaRecepcion, JTextField pacienteRecepcion, JTextField auxiliarRecepcion, SalaVacunacion salaVacunacion) {
         this.colaRecepcion = colaRecepcion;
         this.pacienteRecepcion = pacienteRecepcion;
         this.auxiliarRecepcion = auxiliarRecepcion;
-        this.salaObservacion = salaObservacion;
         this.salaVacunacion = salaVacunacion;
-        colaEspera2 = new ListaThreads(colaRecepcion);
         sumador = 100; //utilizamos una variable para que cada vez que se actualice, elija un rango nuevo
         numeroGanador = (int) (sumador * Math.random()) + 1; //Se elige un número aleatorio entre 100 y ese será el paciente que no pase el registro
     }
@@ -42,11 +38,6 @@ public class Recepcion {
             colaEspera.notify();
         }
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
-    }
-
-    public void meterColaEspera2(Paciente paciente) {       //Prueba con ListaThreads, ignorar ya que seguramente se borre la clase y lo relativo a ella,
-        colaEspera2.introducir(paciente); //Se mete al paciente en la cola
-        colaEspera2.imprimir(); //Mostramos en la cola de espera los pacientes que tenemos
     }
 
     //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
@@ -81,19 +72,17 @@ public class Recepcion {
                     int i = 0;
                     boolean puestoObtenido = false;
                     String sanitario = "";
-                    String jText = "";
                     while (!puestoObtenido && i < salaVacunacion.getPuestos().size()) {
                         if (salaVacunacion.getPuestos().get(i).isDisponiblePaciente()) {
-                            jText = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText();
                             salaVacunacion.getPuestos().get(i).setDisponiblePaciente(false);
                             paciente.setPuesto(i + 1); //El puesto será el número del Puesto que coge
                             sanitario = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText(); //Obtenemos el sanitario que le va a vacunar
                             puestoObtenido = true;
-                            salaVacunacion.getPuestos().get(i).getJtfPuesto().setText(jText + ", " + paciente.toString());
                         }
                         i++;
                     }
                     paciente.getRegistrado().set(true);
+                    pacienteRecepcion.setText(""); //una vez que sabe a que sala va y a que medico le toca ya se limpia el Jtextfield para el siguiente
                     System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + paciente.getPuesto() + " por " + sanitario);
                     synchronized (paciente.getRegistrado()) {
                         paciente.getRegistrado().notify();
@@ -111,6 +100,7 @@ public class Recepcion {
             } catch (InterruptedException ex) {
                 Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
             elegirPacienteParaEchar();
         }
         auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso

@@ -1,8 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -14,15 +12,16 @@ public class Sanitario extends Thread {
     private SalaDescanso salaDescanso; //Se le pasa como parámetro porque necesita acceder a ella
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
-    private AtomicInteger contadoresSanitarios;
-    private int puesto;
+    private ArrayList<AtomicInteger> contadoresSanitarios;
+    private int puesto, numeroSanitario;
 
-    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, AtomicInteger contadoresSanitarios) {
+    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
         this.salaDescanso = salaDescanso;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
         this.contadoresSanitarios = contadoresSanitarios;
+        this.numeroSanitario = num-1;
         this.puesto = 0;
     }
 
@@ -34,30 +33,30 @@ public class Sanitario extends Thread {
             salaVacunacion.colocarSanitarios(this);
             salaVacunacion.vacunarPaciente(this);
             salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
-            
-            //Hay que poner un if para saver si hay un paciente que necesita ser revisado en observación
+
+            //Hay que poner un if para saber si hay un paciente que necesita ser revisado en observación
         }
     }
 
-    public AtomicInteger getContadoresSanitarios() {
+    public ArrayList<AtomicInteger> getContadoresSanitarios() {
         return contadoresSanitarios;
     }
 
-    public void setContadoresSanitarios(AtomicInteger contadoresSanitarios) {
+    public void setContadoresSanitarios(ArrayList<AtomicInteger> contadoresSanitarios) {
         this.contadoresSanitarios = contadoresSanitarios;
-    }
-
-    public void vacunar() {
-        try {
-            this.sleep((int) (3000 * Math.random() + 2000));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Sanitario.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @Override
     public String toString() {
         return id;
+    }
+
+    public int getNumeroSanitario() {
+        return numeroSanitario;
+    }
+
+    public void setNumeroSanitario(int numeroSanitario) {
+        this.numeroSanitario = numeroSanitario;
     }
 
     public void setId(String id) {
@@ -95,7 +94,5 @@ public class Sanitario extends Thread {
     public void setPuesto(int puesto) {
         this.puesto = puesto;
     }
-    
-    
 
 }

@@ -10,7 +10,7 @@ public class Paciente extends Thread {
     private String id;
     private Recepcion recepcion; //Reciben la recepcion directamente del main para que sea la misma todo el rato
     private int numero;
-    private AtomicBoolean registrado, reaccionVacuna;
+    private AtomicBoolean registrado, reaccionVacuna, vacunado;
     private int puesto;
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
@@ -21,15 +21,15 @@ public class Paciente extends Thread {
         this.recepcion = recepcion;
         this.registrado = new AtomicBoolean(false);
         this.reaccionVacuna = new AtomicBoolean(false);
+        this.vacunado = new AtomicBoolean(false);
         this.puesto = 0;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
     }
 
     public void run() {
-        try {//sleep antes de entrar a recepcion y evitar CrearPacientes? //Si se hace un sleep aqui el problema es que se crean los 2000 pacientes de golpe y 
-            //todos hacen un sleep y entran a la vez, por eso hay que crear una clase de CrearPacientes
-            recepcion.meterColaEspera(this);
+        try {
+            recepcion.meterColaEspera(this); //Cuando un paciente llega se mete en la cola de 
 
             //Esperamos mientras el auxliar nos indica al puesto que tenemos que ir o si no tenemos cita
             synchronized (this.registrado) {
@@ -39,11 +39,15 @@ public class Paciente extends Thread {
             //Una vez registrados pasamos al puesto de vacunación o a la calle porque no ha acudido sin cita
             if (registrado.get()) {
                 salaVacunacion.entraPaciente(this);
-                //Aquí viene la sala de observación para después de la vacuna
-                synchronized (this.registrado) {
-                    this.registrado.wait();
-                }
+                //Hay que hacer que el paciente espere
+                
                 salaObservacion.entraPaciente(this);
+                salaObservacion.pacienteEnObservacion(this);
+                salaObservacion.salirHospital(this); //Una vez que el paciente ha sido observado sale del hospital
+
+            } else {
+                //Si no ha sido registrado directamente sale del hospital 
+                salaObservacion.salirHospital(this);
             }
         } catch (Exception e) {
             System.out.println("La has liado");
@@ -65,7 +69,7 @@ public class Paciente extends Thread {
     public void setReaccionVacuna(AtomicBoolean reaccionVacuna) {
         this.reaccionVacuna = reaccionVacuna;
     }
-    
+
     public int getPuesto() {
         return puesto;
     }
@@ -80,6 +84,42 @@ public class Paciente extends Thread {
 
     public void setNumero(int numero) {
         this.numero = numero;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Recepcion getRecepcion() {
+        return recepcion;
+    }
+
+    public void setRecepcion(Recepcion recepcion) {
+        this.recepcion = recepcion;
+    }
+
+    public AtomicBoolean getVacunado() {
+        return vacunado;
+    }
+
+    public void setVacunado(AtomicBoolean vacunado) {
+        this.vacunado = vacunado;
+    }
+
+    public SalaVacunacion getSalaVacunacion() {
+        return salaVacunacion;
+    }
+
+    public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
+        this.salaVacunacion = salaVacunacion;
+    }
+
+    public SalaObservacion getSalaObservacion() {
+        return salaObservacion;
+    }
+
+    public void setSalaObservacion(SalaObservacion salaObservacion) {
+        this.salaObservacion = salaObservacion;
     }
 
     @Override
