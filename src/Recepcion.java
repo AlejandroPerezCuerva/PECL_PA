@@ -1,6 +1,7 @@
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,8 @@ public class Recepcion {
     private AtomicInteger contadorRegistrar = new AtomicInteger(0);
     private int numeroGanador, sumador;
 
+    private Semaphore semEsperaPaciente = new Semaphore(0);
+
     public Recepcion(JTextArea colaRecepcion, JTextField pacienteRecepcion, JTextField auxiliarRecepcion, SalaVacunacion salaVacunacion) {
         this.colaRecepcion = colaRecepcion;
         this.pacienteRecepcion = pacienteRecepcion;
@@ -33,11 +36,10 @@ public class Recepcion {
 
     //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
     public void meterColaEspera(Paciente paciente) {
-        colaEspera.offer(paciente); //Se mete al paciente en la cola
-        synchronized (colaEspera) {
-            colaEspera.notify();
-        }
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
+        colaEspera.offer(paciente); //Se mete al paciente en la cola
+        semEsperaPaciente.release();
+
     }
 
     //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
@@ -49,59 +51,63 @@ public class Recepcion {
         auxiliar1.getContadorAux1().set(0);
 
         System.out.println("Num aleatorio: " + numeroGanador);
-        while (!colaEspera.isEmpty() && auxiliar1.getContadorAux1().getAndIncrement() <= 10) {
-            //Mientras la cola no esté vacía y el contador sea menor que 10, se sigue registrando pacientes
-            try {
-                Paciente paciente = (Paciente) colaEspera.poll(); //Con esto lo saca de la cola y lo borra
-                pacienteRecepcion.setText(paciente.toString());
-                colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
-                auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
+        while (auxiliar1.getContadorAux1().get() < 10) {
+            //Mientras el contador sea menor que 10, se sigue registrando pacientes
 
-                //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
-                if (paciente.getNumero() != numeroGanador) {
-                    //Mientras no haya huecos en las salas de observación y vacunación se espera
-                    
-                    /*while (!salaVacunacion.getCapacidadVacunacion().tryAcquire()) {
-                        System.out.println("Funcionaaaaaaaa");
-                        synchronized (salaVacunacion.getCapacidadVacunacion()) {
-                            salaVacunacion.getCapacidadVacunacion().wait();
+            if (colaEspera.isEmpty()) {
+                try {
+                    //Si la cola de espera del registro está vacía, se espera
+                    semEsperaPaciente.acquire();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    Paciente paciente = (Paciente) colaEspera.poll(); //Con esto lo saca de la cola y lo borra
+                    pacienteRecepcion.setText(paciente.toString());
+                    colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
+                    auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
+
+                    //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
+                    if (paciente.getNumero() != numeroGanador) {
+
+                        /*
+                        Aquí hay que poner las comprobaciones de la sala de vacunación y la sala de observación
+                        */
+                        
+                        //Elige el puesto y el sanitario que le va a tocar vacunarse
+                        int i = 0;
+                        boolean puestoObtenido = false;
+                        String sanitario = "";
+                        while (!puestoObtenido && i < salaVacunacion.getPuestos().size()) {
+                            if (salaVacunacion.getPuestos().get(i).isDisponiblePaciente()) {
+                                salaVacunacion.getPuestos().get(i).setDisponiblePaciente(false);
+                                paciente.setPuesto(i + 1); //El puesto será el número del Puesto que coge
+                                sanitario = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText(); //Obtenemos el sanitario que le va a vacunar
+                                puestoObtenido = true;
+                            }
+                            i++;
                         }
-                    }*/
-                    //Configurar bien el while de espera
-                    
-                    int i = 0;
-                    boolean puestoObtenido = false;
-                    String sanitario = "";
-                    while (!puestoObtenido && i < salaVacunacion.getPuestos().size()) {
-                        if (salaVacunacion.getPuestos().get(i).isDisponiblePaciente()) {
-                            salaVacunacion.getPuestos().get(i).setDisponiblePaciente(false);
-                            paciente.setPuesto(i + 1); //El puesto será el número del Puesto que coge
-                            sanitario = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText(); //Obtenemos el sanitario que le va a vacunar
-                            puestoObtenido = true;
-                        }
-                        i++;
-                    }
-                    paciente.getRegistrado().set(true);
-                    pacienteRecepcion.setText(""); //una vez que sabe a que sala va y a que medico le toca ya se limpia el Jtextfield para el siguiente
-                    System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + paciente.getPuesto() + " por " + sanitario);
-                    synchronized (paciente.getRegistrado()) {
-                        paciente.getRegistrado().notify();
+
+                        paciente.getRegistrado().set(true); //Se confirma que se puede vacunar
+                        auxiliar1.getSemRegistrar().release(); //Una vez que ha terminado el registro, el Auxiliar le da permiso para que avance a la siguiente sala
+                        pacienteRecepcion.setText(""); //una vez que sabe a que sala va y a que medico le toca ya se limpia el Jtextfield para el siguiente
+                        System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + paciente.getPuesto() + " por " + sanitario);
+
+                    } else {
+                        paciente.getRegistrado().set(false);
+                        auxiliar1.getSemRegistrar().release(); //Una vez que ha terminado el registro se puede ir a la siguiente sala
+                        System.out.println("Paciente " + paciente.toString() + " ha acudido sin cita");
                     }
 
-                } else {
-                    paciente.getRegistrado().set(false);
-                    System.out.println("Paciente " + paciente.toString() + " ha acudido sin cita");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                synchronized (colaEspera) {
-                    colaEspera.wait();
-                }
-
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Recepcion.class.getName()).log(Level.SEVERE, null, ex);
+                elegirPacienteParaEchar();
+                auxiliar1.getContadorAux1().incrementAndGet();
             }
-            
-            elegirPacienteParaEchar();
+
         }
         auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
     }

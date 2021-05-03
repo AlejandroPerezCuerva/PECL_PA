@@ -12,21 +12,21 @@ import javax.swing.JTextField;
  */
 public class SalaObservacion {
     
-    private int max, puestoLibre;
+    private int aforoObservacion, puestoLibre;
     private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
     private Semaphore capacidadObservacion; //Semaforo con la capacidad máxima de la sala de observacion
     private JTextField salidaTextField;
     
-    public SalaObservacion(int max, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField) {
-        this.max = max;
+    public SalaObservacion(int aforoObservacion, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField) {
+        this.aforoObservacion = aforoObservacion;
         this.puestosObservacion = puestosObservacion;
         //Añadimos los puestos de observación a un array de la clase puestos para tener un mayor control sobre ellos
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < aforoObservacion; i++) {
             Puesto nuevoPuesto = new Puesto(puestosObservacion.get(i), true, true);
             puestos.add(nuevoPuesto);
         }
-        this.capacidadObservacion = new Semaphore(max); //Se inicializa el semaforo con la capacidad máxima de aforo
+        this.capacidadObservacion = new Semaphore(aforoObservacion); //Se inicializa el semaforo con la capacidad máxima de aforo
         this.salidaTextField = salidaTextField;
     }
     
@@ -64,7 +64,7 @@ public class SalaObservacion {
     public void pacienteEnObservacion(Paciente paciente) {
         boolean reaccion = (int) (100 * Math.random()) <= 5; //En el 5% de los casos el paciente sufre efectos adversos
         try {
-            sleep(10000); //El paciente está 10 segundos es la observación 
+            paciente.currentThread().sleep(10000); //El paciente está 10 segundos es la observación 
             if (reaccion) {
                 puestos.get(paciente.getPuesto()).getAtendido().set(false);//El puesto necesita ser atendido
                 paciente.getReaccionVacuna().set(true);//El paciente tiene una reaccion a la vacuna
@@ -88,14 +88,6 @@ public class SalaObservacion {
     
     public void salirHospital(Paciente paciente) {
         salidaTextField.setText(paciente.toString());
-    }
-    
-    public int getMax() {
-        return max;
-    }
-    
-    public void setMax(int max) {
-        this.max = max;
     }
     
     public int getPuestoLibre() {

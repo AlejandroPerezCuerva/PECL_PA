@@ -1,5 +1,7 @@
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,15 +16,17 @@ public class Sanitario extends Thread {
     private SalaObservacion salaObservacion;
     private ArrayList<AtomicInteger> contadoresSanitarios;
     private int puesto, numeroSanitario;
+    private BlockingQueue bloquearPaciente;
 
-    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
+    public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios, BlockingQueue bloquearPaciente) {
         id = "S" + String.format("%02d", num);
         this.salaDescanso = salaDescanso;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
         this.contadoresSanitarios = contadoresSanitarios;
-        this.numeroSanitario = num-1;
+        this.numeroSanitario = num - 1;
         this.puesto = 0;
+        this.bloquearPaciente = bloquearPaciente;
     }
 
     public void run() {
@@ -93,6 +97,14 @@ public class Sanitario extends Thread {
 
     public void setPuesto(int puesto) {
         this.puesto = puesto;
+    }
+
+    public BlockingQueue getBloquearPaciente() {
+        return bloquearPaciente;
+    }
+
+    public void setBloquearPaciente(BlockingQueue bloquearPaciente) {
+        this.bloquearPaciente = bloquearPaciente;
     }
 
 }

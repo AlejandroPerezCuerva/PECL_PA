@@ -1,5 +1,8 @@
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextField;
 
@@ -19,6 +22,10 @@ public class Main extends javax.swing.JFrame {
     private ArrayList<AtomicInteger> contadoresSanitarios = new ArrayList<>(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
     private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>();
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
+    private Semaphore semRegistrar = new Semaphore(0); //Es un semaforo que será objeto compartido entre los pacientes y el auxiliar 1 para que el auxiliar tenga
+    //el privilegio de detener al paciente hasta que termine el registro de la vacuna. Tiene que ser un objeto compartido para que el paciente pueda esperar
+    
+    private BlockingQueue bloquearPaciente = new LinkedBlockingQueue();
 
     /**
      * Creates new form Main
@@ -73,17 +80,17 @@ public class Main extends javax.swing.JFrame {
         salaDescanso = new SalaDescanso(colaSalaDescanso);
 
         //Inicializamos crearPacientes y le pasamos los parámetros necesarios que necesitan los pacientes
-        crearPacientes = new CrearPacientes(recepcion, salaVacunacion, salaObservacion);
+        crearPacientes = new CrearPacientes(recepcion, salaVacunacion, salaObservacion, semRegistrar, bloquearPaciente);
         crearPacientes.start();
 
         for (int i = 0; i < 10; i++) {
             AtomicInteger nuevoContador = new AtomicInteger(0);
             contadoresSanitarios.add(nuevoContador); //Inicializamos todos los contadores a 0
-            Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios); //Todos los parámetros necesarios para los sanitarios
+            Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios, bloquearPaciente); //Todos los parámetros necesarios para los sanitarios
             sanitarioNuevo.start();
         }
 
-        Auxiliar a1 = new Auxiliar(1, contadorAux1, recepcion, salaDescanso);
+        Auxiliar a1 = new Auxiliar(1, contadorAux1, recepcion, salaDescanso, semRegistrar);
         Auxiliar a2 = new Auxiliar(2, contadorAux2, salaVacunacion, salaDescanso);
         a1.start();
         a2.start();

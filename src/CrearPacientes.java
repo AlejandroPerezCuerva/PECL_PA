@@ -1,7 +1,9 @@
 
 import static java.lang.Thread.sleep;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,17 +22,21 @@ public class CrearPacientes extends Thread {
     private ExecutorService pool = Executors.newCachedThreadPool(); //Se crean los hilos con un pool para luego poder controlar la vida de ellos 
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
+    private Semaphore semRegistrar;
+    private BlockingQueue bloquearPaciente;
 
-    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion) {
+    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion,Semaphore semRegistrar, BlockingQueue bloquearPaciente) {
         this.recepcion = recepcion;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
+        this.semRegistrar = semRegistrar;
+        this.bloquearPaciente = bloquearPaciente;
     }
 
     public void run() {
         //Se crean los 2000 pacientes con un sleep de 1 a 3 segundos de forma aleatoria para que entren de forma ordenada y escalonada
         for (int i = 0; i < 2000; i++) {
-            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion, salaObservacion);
+            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion, salaObservacion, semRegistrar, bloquearPaciente);
             try {
                 sleep((int) (2000 * Math.random() + 1000)); //Los pacientes esperan entre 1 y 3 segundos para llegar de forma escalonada
             } catch (InterruptedException ex) {
