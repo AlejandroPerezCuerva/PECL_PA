@@ -1,7 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextField;
@@ -25,8 +23,6 @@ public class Main extends javax.swing.JFrame {
     private Semaphore semRegistrar = new Semaphore(0); //Es un semaforo que será objeto compartido entre los pacientes y el auxiliar 1 para que el auxiliar tenga
     //el privilegio de detener al paciente hasta que termine el registro de la vacuna. Tiene que ser un objeto compartido para que el paciente pueda esperar
     
-    private BlockingQueue bloquearPaciente = new LinkedBlockingQueue();
-
     /**
      * Creates new form Main
      */
@@ -80,13 +76,13 @@ public class Main extends javax.swing.JFrame {
         salaDescanso = new SalaDescanso(colaSalaDescanso);
 
         //Inicializamos crearPacientes y le pasamos los parámetros necesarios que necesitan los pacientes
-        crearPacientes = new CrearPacientes(recepcion, salaVacunacion, salaObservacion, semRegistrar, bloquearPaciente);
+        crearPacientes = new CrearPacientes(recepcion, salaVacunacion, salaObservacion, semRegistrar);
         crearPacientes.start();
 
         for (int i = 0; i < 10; i++) {
             AtomicInteger nuevoContador = new AtomicInteger(0);
             contadoresSanitarios.add(nuevoContador); //Inicializamos todos los contadores a 0
-            Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios, bloquearPaciente); //Todos los parámetros necesarios para los sanitarios
+            Sanitario sanitarioNuevo = new Sanitario(i+1, salaDescanso, salaVacunacion, salaObservacion, contadoresSanitarios); //Todos los parámetros necesarios para los sanitarios
             sanitarioNuevo.start();
         }
 

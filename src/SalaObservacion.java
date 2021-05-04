@@ -65,7 +65,7 @@ public class SalaObservacion {
         boolean reaccion = (int) (100 * Math.random()) <= 5; //En el 5% de los casos el paciente sufre efectos adversos
         try {
             paciente.currentThread().sleep(10000); //El paciente está 10 segundos es la observación 
-            if (reaccion) {
+           /* if (reaccion) {
                 puestos.get(paciente.getPuesto()).getAtendido().set(false);//El puesto necesita ser atendido
                 paciente.getReaccionVacuna().set(true);//El paciente tiene una reaccion a la vacuna
                 while (paciente.getReaccionVacuna().equals(true)) {//Mientras el sanitario no determine que no tiene reaccion espera
@@ -74,7 +74,7 @@ public class SalaObservacion {
                     } catch (Exception e) {
                     }
                 }
-            }
+            }*/
             puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
             capacidadObservacion.release();
             puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");

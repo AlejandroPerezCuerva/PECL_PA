@@ -39,7 +39,6 @@ public class Recepcion {
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
         colaEspera.offer(paciente); //Se mete al paciente en la cola
         semEsperaPaciente.release();
-
     }
 
     //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
@@ -73,7 +72,7 @@ public class Recepcion {
 
                         /*
                         Aquí hay que poner las comprobaciones de la sala de vacunación y la sala de observación
-                        */
+                         */
                         
                         //Elige el puesto y el sanitario que le va a tocar vacunarse
                         int i = 0;
@@ -82,7 +81,7 @@ public class Recepcion {
                         while (!puestoObtenido && i < salaVacunacion.getPuestos().size()) {
                             if (salaVacunacion.getPuestos().get(i).isDisponiblePaciente()) {
                                 salaVacunacion.getPuestos().get(i).setDisponiblePaciente(false);
-                                paciente.setPuesto(i + 1); //El puesto será el número del Puesto que coge
+                                paciente.setPuesto(i); //El puesto será el número del Puesto que coge
                                 sanitario = salaVacunacion.getPuestos().get(i).getJtfPuesto().getText(); //Obtenemos el sanitario que le va a vacunar
                                 puestoObtenido = true;
                             }
@@ -92,7 +91,7 @@ public class Recepcion {
                         paciente.getRegistrado().set(true); //Se confirma que se puede vacunar
                         auxiliar1.getSemRegistrar().release(); //Una vez que ha terminado el registro, el Auxiliar le da permiso para que avance a la siguiente sala
                         pacienteRecepcion.setText(""); //una vez que sabe a que sala va y a que medico le toca ya se limpia el Jtextfield para el siguiente
-                        System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + paciente.getPuesto() + " por " + sanitario);
+                        System.out.println("Paciente " + paciente.toString() + " vacunado en el puesto " + (paciente.getPuesto() + 1) + " por " + sanitario); //El mas 1 es porque empieza en 0 el array de los puestos
 
                     } else {
                         paciente.getRegistrado().set(false);
@@ -123,6 +122,78 @@ public class Recepcion {
             numeroGanador = (int) (100 * Math.random()) + 1; //Elegimos otro número
             numeroGanador = numeroGanador + sumador; //Con esto se eligen numeros en rangos de 100 para tener así un 1% exacto en cada 100 pacientes
         }
+    }
+
+    public JTextField getPacienteRecepcion() {
+        return pacienteRecepcion;
+    }
+
+    public void setPacienteRecepcion(JTextField pacienteRecepcion) {
+        this.pacienteRecepcion = pacienteRecepcion;
+    }
+
+    public JTextField getAuxiliarRecepcion() {
+        return auxiliarRecepcion;
+    }
+
+    public void setAuxiliarRecepcion(JTextField auxiliarRecepcion) {
+        this.auxiliarRecepcion = auxiliarRecepcion;
+    }
+
+    public JTextArea getColaRecepcion() {
+        return colaRecepcion;
+    }
+
+    public void setColaRecepcion(JTextArea colaRecepcion) {
+        this.colaRecepcion = colaRecepcion;
+    }
+
+    public Queue<Paciente> getColaEspera() {
+        return colaEspera;
+    }
+
+    public void setColaEspera(Queue<Paciente> colaEspera) {
+        this.colaEspera = colaEspera;
+    }
+
+    public SalaVacunacion getSalaVacunacion() {
+        return salaVacunacion;
+    }
+
+    public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
+        this.salaVacunacion = salaVacunacion;
+    }
+
+    public AtomicInteger getContadorRegistrar() {
+        return contadorRegistrar;
+    }
+
+    public void setContadorRegistrar(AtomicInteger contadorRegistrar) {
+        this.contadorRegistrar = contadorRegistrar;
+    }
+
+    public int getNumeroGanador() {
+        return numeroGanador;
+    }
+
+    public void setNumeroGanador(int numeroGanador) {
+        this.numeroGanador = numeroGanador;
+    }
+
+    public int getSumador() {
+        return sumador;
+    }
+
+    public void setSumador(int sumador) {
+        this.sumador = sumador;
+    }
+
+    public Semaphore getSemEsperaPaciente() {
+        return semEsperaPaciente;
+    }
+
+    public void setSemEsperaPaciente(Semaphore semEsperaPaciente) {
+        this.semEsperaPaciente = semEsperaPaciente;
     }
 
 }

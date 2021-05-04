@@ -23,20 +23,18 @@ public class CrearPacientes extends Thread {
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
     private Semaphore semRegistrar;
-    private BlockingQueue bloquearPaciente;
 
-    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion,Semaphore semRegistrar, BlockingQueue bloquearPaciente) {
+    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion,Semaphore semRegistrar) {
         this.recepcion = recepcion;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
         this.semRegistrar = semRegistrar;
-        this.bloquearPaciente = bloquearPaciente;
     }
 
     public void run() {
         //Se crean los 2000 pacientes con un sleep de 1 a 3 segundos de forma aleatoria para que entren de forma ordenada y escalonada
         for (int i = 0; i < 2000; i++) {
-            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion, salaObservacion, semRegistrar, bloquearPaciente);
+            Paciente pacienteNuevo = new Paciente(i, recepcion, salaVacunacion, salaObservacion, semRegistrar);
             try {
                 sleep((int) (2000 * Math.random() + 1000)); //Los pacientes esperan entre 1 y 3 segundos para llegar de forma escalonada
             } catch (InterruptedException ex) {
