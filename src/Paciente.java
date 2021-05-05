@@ -37,7 +37,7 @@ public class Paciente extends Thread {
     public void run() {
         try {
             recepcion.meterColaEspera(this); //Cuando un paciente llega se mete en la cola de
-            
+
             //El paciente esperará hasta que el auxiliar 1 verifique que tiene cita para la vacuna, gracias al semaforo compartido entre el paciente y el auxiliar
             this.semRegistrar.acquire(); //Condición de esepera
 
@@ -45,11 +45,11 @@ public class Paciente extends Thread {
             if (registrado.get()) {
                 salaVacunacion.entraPaciente(this);
 
-                pacienteVacunado.acquire();
-                
+                pacienteVacunado.acquire(); //Hasta que el paciente no ha terminado de vacunarse no estra a la sala de observación
+
                 salaObservacion.entraPaciente(this);
                 salaObservacion.pacienteEnObservacion(this);
-                
+
                 salaObservacion.salirHospital(this); //Una vez que el paciente ha sido observado sale del hospital
 
             } else {
@@ -59,7 +59,6 @@ public class Paciente extends Thread {
         } catch (InterruptedException ex) {
             Logger.getLogger(Paciente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
 
     public Semaphore getPacienteVacunado() {
@@ -101,7 +100,6 @@ public class Paciente extends Thread {
     public void setNumero(int numero) {
         this.numero = numero;
     }
-
 
     public void setId(String id) {
         this.id = id;

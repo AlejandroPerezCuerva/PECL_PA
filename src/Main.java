@@ -70,7 +70,7 @@ public class Main extends javax.swing.JFrame {
         salaObservacion = new SalaObservacion(20, puestosObservacion, salidaTextField);
         
         //Insertamos todos los JTextField necesarios de Recepion
-        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion);
+        recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
 
         //Insertamos todos los JTextField necesarios de SalaDescanso
         salaDescanso = new SalaDescanso(colaSalaDescanso);

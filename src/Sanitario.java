@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,7 +16,6 @@ public class Sanitario extends Thread {
     private SalaObservacion salaObservacion;
     private ArrayList<AtomicInteger> contadoresSanitarios;
     private int puesto, numeroSanitario;
-    
 
     public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
@@ -31,9 +32,13 @@ public class Sanitario extends Thread {
         salaDescanso.cambiarseSanitario(this);
         //Ahora los sanitarios se tienen que ir a la sala de vacunación para meterse cada uno en su puesto
         while (true) {
-            salaVacunacion.colocarSanitarios(this);
-            salaVacunacion.vacunarPaciente(this);
-            salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
+            try {
+                salaVacunacion.colocarSanitarios(this);
+                salaVacunacion.vacunarPaciente(this);
+                salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Sanitario.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             //Hay que poner un if para saber si hay un paciente que necesita ser revisado en observación
         }

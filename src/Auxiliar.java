@@ -1,6 +1,8 @@
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,12 +36,16 @@ public class Auxiliar extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (this.id.equalsIgnoreCase("A1")) {
-                recepcion.registrarPacientes(this);
-                salaDescanso.descansoAuxiliares(this, 5000, 3000); //Auxiliar 1 se va a descansar cuando hace 10 registros, le pasamos los tiempos de descanso
-            } else {
-                salaVacunacion.introducirDosis(this);
-                salaDescanso.descansoAuxiliares(this, 4000, 1000); //Auxiliar 2 se va a descansar cuando coge 10 dosis, le pasamos los tiempos de descanso
+            try {
+                if (this.id.equalsIgnoreCase("A1")) {
+                    recepcion.registrarPacientes(this);
+                    salaDescanso.descansoAuxiliares(this, 5000, 3000); //Auxiliar 1 se va a descansar cuando hace 10 registros, le pasamos los tiempos de descanso
+                } else {
+                    salaVacunacion.introducirDosis(this);
+                    salaDescanso.descansoAuxiliares(this, 4000, 1000); //Auxiliar 2 se va a descansar cuando coge 10 dosis, le pasamos los tiempos de descanso
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Auxiliar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
