@@ -7,7 +7,6 @@ public class Puesto {
     private JTextField jtfPuesto;
     private boolean disponible, disponiblePaciente;
     private Paciente paciente;
-    private AtomicBoolean atendido;
 
     public Puesto(JTextField jtfPuesto, boolean disponible, boolean disponiblePaciente) {
         this.jtfPuesto = jtfPuesto;
@@ -25,14 +24,6 @@ public class Puesto {
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
-    }
-
-    public AtomicBoolean getAtendido() {
-        return atendido;
-    }
-
-    public void setAtendido(AtomicBoolean atendido) {
-        this.atendido = atendido;
     }
     
     public boolean isDisponible() {
@@ -64,6 +55,5 @@ public class Puesto {
     public void setDisponiblePaciente(boolean disponiblePaciente) {
         this.disponiblePaciente = disponiblePaciente;
     }
-
 
 }

@@ -1,5 +1,7 @@
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.JTextField;
@@ -22,7 +24,7 @@ public class Main extends javax.swing.JFrame {
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
     private Semaphore semRegistrar = new Semaphore(0); //Es un semaforo que será objeto compartido entre los pacientes y el auxiliar 1 para que el auxiliar tenga
     //el privilegio de detener al paciente hasta que termine el registro de la vacuna. Tiene que ser un objeto compartido para que el paciente pueda esperar
-    
+    private BlockingQueue pacientesObservacion= new LinkedBlockingQueue();//Objeto para coordinar la observacion de los pacientes
     /**
      * Creates new form Main
      */
@@ -67,13 +69,13 @@ public class Main extends javax.swing.JFrame {
         salaVacunacion = new SalaVacunacion(10, auxiliarVacunacion, numeroVacunas, puestosVacunacion);
         
         //Insertamos todos los JTextField necesarios de SalaVacunacion
-        salaObservacion = new SalaObservacion(20, puestosObservacion, salidaTextField);
+        salaObservacion = new SalaObservacion(20, puestosObservacion, salidaTextField, pacientesObservacion);
         
         //Insertamos todos los JTextField necesarios de Recepion
         recepcion = new Recepcion(colaRecepcion, pacienteRecepcion, auxiliarRecepcion, salaVacunacion, salaObservacion);
 
         //Insertamos todos los JTextField necesarios de SalaDescanso
-        salaDescanso = new SalaDescanso(colaSalaDescanso);
+        salaDescanso = new SalaDescanso(colaSalaDescanso, pacientesObservacion);
 
         //Inicializamos crearPacientes y le pasamos los parámetros necesarios que necesitan los pacientes
         crearPacientes = new CrearPacientes(recepcion, salaVacunacion, salaObservacion, semRegistrar);

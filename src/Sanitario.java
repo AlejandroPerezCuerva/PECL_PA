@@ -15,7 +15,7 @@ public class Sanitario extends Thread {
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
     private ArrayList<AtomicInteger> contadoresSanitarios;
-    private int puesto, numeroSanitario;
+    private int puesto, numeroSanitario;//****numeroSanitario sobra?*****/
 
     public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
@@ -36,6 +36,9 @@ public class Sanitario extends Thread {
                 salaVacunacion.colocarSanitarios(this);
                 salaVacunacion.vacunarPaciente(this);
                 salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
+                if (!salaObservacion.getPacientesObservacion().isEmpty()) {
+                    salaObservacion.atenderPaciente(this,(Paciente) (salaObservacion.getPacientesObservacion().take()));
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Sanitario.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -20,6 +20,7 @@ public class Paciente extends Thread {
     private SalaObservacion salaObservacion;
     private Semaphore semRegistrar; //Objeto compartido con el auxiliar 1 para que espere mientra se hace el registro de la vacuna
     private Semaphore pacienteVacunado;
+    private Semaphore semObservar=new Semaphore(0);
 
     public Paciente(int numero, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, Semaphore semRegistrar) {
         this.numero = numero;
@@ -49,7 +50,8 @@ public class Paciente extends Thread {
 
                 salaObservacion.entraPaciente(this);
                 salaObservacion.pacienteEnObservacion(this);
-
+                semObservar.acquire();//Espera mientras es observado
+                System.out.println("me voy");
                 salaObservacion.salirHospital(this); //Una vez que el paciente ha sido observado sale del hospital
 
             } else {
@@ -136,7 +138,10 @@ public class Paciente extends Thread {
     public void setSemRegistrar(Semaphore semRegistrar) {
         this.semRegistrar = semRegistrar;
     }
-
+    
+    public Semaphore getSemObservar(){
+        return semObservar;
+    }
     @Override
     public String toString() {
         return id;

@@ -20,12 +20,7 @@ public class SalaVacunacion {
     private ArrayList<JTextField> puestosVacunacion;
     private JTextField auxiliarVacunacion, numeroVacunas;
     private AtomicInteger contadorVacunas;
-    private SalaObservacion salaObservacion;    //Sala necesaria para que los pacientes pasen de vacunar a observar
     private BlockingQueue colaVacunar;
-
-    private Semaphore capacidadVacunacion; //Semaforo con la capacidad máxima de la sala de vacunación
-
-    private Semaphore semEsperaPaciente = new Semaphore(0); //Con este semáforo se espera hasta que haya pacientes en la cola
 
     public SalaVacunacion(int aforoVacunacion, JTextField auxiliarVacunacion, JTextField numeroVacunas, ArrayList<JTextField> puestosVacunacion) {
         this.aforoVacunacion = aforoVacunacion;
@@ -41,14 +36,6 @@ public class SalaVacunacion {
     }
 
     //Método para el auxiliar 2, genera 20 dosis con el periodo indicado. Tiene un contador que llega hasta 20
-    /**
-     * *
-     * En introducirDosis comprobar simultaneamente que haya hueco en Vacunacion
-     * y Observacion, cuando haya en ambos toma un permiso de ambos semáforos y
-     * ocupa primero el puesto de vacunación y cuando acabe el de observación
-     *
-     **
-     */
     public void introducirDosis(Auxiliar auxiliar2) throws InterruptedException {
         //Primero ponemos el contador del auxiliar 2 a 0
         auxiliar2.getContadorAux2().set(0);
@@ -112,7 +99,6 @@ public class SalaVacunacion {
                 puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
                 puestos.get(paciente.getPuesto()).getJtfPuesto().setText(sanitario.toString()); //Cuando va a salir de la sala de vacunación deja al sanitario solo para que atienda al siguiente paciente
 
-                //puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Se queda libre el puesto del paciente para que pueda entrar otro
                 paciente.getPacienteVacunado().release(); //Se supone que cuando termina el sleep se le avisa al paciente para que entre en la sala de observación
 
                 paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de vacunación
@@ -168,23 +154,7 @@ public class SalaVacunacion {
     public void setContadorVacunas(AtomicInteger contadorVacunas) {
         this.contadorVacunas = contadorVacunas;
     }
-
-    public SalaObservacion getSalaObservacion() {
-        return salaObservacion;
-    }
-
-    public void setSalaObservacion(SalaObservacion salaObservacion) {
-        this.salaObservacion = salaObservacion;
-    }
-
-    public Semaphore getCapacidadVacunacion() {
-        return capacidadVacunacion;
-    }
-
-    public void setCapacidadVacunacion(Semaphore capacidadVacunacion) {
-        this.capacidadVacunacion = capacidadVacunacion;
-    }
-
+    
     public int getPuestoPaciente() {
         return puestoPaciente;
     }
@@ -200,13 +170,4 @@ public class SalaVacunacion {
     public void setColaVacunar(BlockingQueue colaVacunar) {
         this.colaVacunar = colaVacunar;
     }
-
-    public Semaphore getSemEsperaPaciente() {
-        return semEsperaPaciente;
-    }
-
-    public void setSemEsperaPaciente(Semaphore semEsperaPaciente) {
-        this.semEsperaPaciente = semEsperaPaciente;
-    }
-
 }

@@ -20,9 +20,6 @@ public class Recepcion {
     private SalaVacunacion salaVacunacion; //Sala necesaria para que los pacientes pasen de recepcion a vacunacion
     private SalaObservacion salaObservacion;
 
-    private AtomicInteger contadorRegistrar = new AtomicInteger(0);
-    private int numeroGanador, sumador;
-
     private Semaphore semEsperaPaciente = new Semaphore(0); //Semaforo que hace que el paciente espere mientras no haya nadie en la cola de espera en recepción
     private Semaphore semSalasOcupadas = new Semaphore(0); //Semaforo que hacer que el paciente espere si la sala de observación y vacunación están ocupadas
 
@@ -32,14 +29,12 @@ public class Recepcion {
         this.auxiliarRecepcion = auxiliarRecepcion;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
-        sumador = 100; //utilizamos una variable para que cada vez que se actualice, elija un rango nuevo
-        numeroGanador = (int) (sumador * Math.random()) + 1; //Se elige un número aleatorio entre 100 y ese será el paciente que no pase el registro
     }
 
     //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
     public void meterColaEspera(Paciente paciente) throws InterruptedException {
-        colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
         colaEspera.put(paciente); //Se mete al paciente en la cola
+        colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
         semEsperaPaciente.release();
     }
 
@@ -64,8 +59,7 @@ public class Recepcion {
                 colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
                 auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
 
-                //Aquí he pensado en generar un número aleatorio entre 100 y el que coincida con el ID del paciente va fuera y cada 100 pacientes se actualiza
-                if (paciente.getNumero() != numeroGanador) {
+                if ((int)(Math.random()*100)<=99) {//Un 1% de los pacientes no tinenen cita previa
 
                     while (salaVacunacion.getColaVacunar().size() >= 10 && salaObservacion.getCapacidadObservacion().size() >= 20) {
                         //Si están llenas las salas se espera
@@ -96,26 +90,11 @@ public class Recepcion {
                     pacienteRecepcion.setText("");
                     System.out.println("Paciente " + paciente.toString() + " ha acudido sin cita");
                 }
-
-                elegirPacienteParaEchar();
                 auxiliar1.getContadorAux1().incrementAndGet();
             }
 
         }
         auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
-    }
-
-    //Se deja en un método el elegir un número para saber a que paciente no pasa el registro en la recepción
-    public void elegirPacienteParaEchar() {
-        //Si el contador no llega a 100 se le suma uno, si llega a 100 se pone a 0 y se elige el próximo paciente que no será registrado
-        //En un 1% de los casos, el auxiliar tiene que echar a un paciente fuera del hospital
-        if (contadorRegistrar.get() < 100) {
-            contadorRegistrar.getAndIncrement();
-        } else {
-            contadorRegistrar.set(0);
-            numeroGanador = (int) (100 * Math.random()) + 1; //Elegimos otro número
-            numeroGanador = numeroGanador + sumador; //Con esto se eligen numeros en rangos de 100 para tener así un 1% exacto en cada 100 pacientes
-        }
     }
 
     public JTextField getPacienteRecepcion() {
@@ -148,30 +127,6 @@ public class Recepcion {
 
     public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
         this.salaVacunacion = salaVacunacion;
-    }
-
-    public AtomicInteger getContadorRegistrar() {
-        return contadorRegistrar;
-    }
-
-    public void setContadorRegistrar(AtomicInteger contadorRegistrar) {
-        this.contadorRegistrar = contadorRegistrar;
-    }
-
-    public int getNumeroGanador() {
-        return numeroGanador;
-    }
-
-    public void setNumeroGanador(int numeroGanador) {
-        this.numeroGanador = numeroGanador;
-    }
-
-    public int getSumador() {
-        return sumador;
-    }
-
-    public void setSumador(int sumador) {
-        this.sumador = sumador;
     }
 
     public Semaphore getSemEsperaPaciente() {
