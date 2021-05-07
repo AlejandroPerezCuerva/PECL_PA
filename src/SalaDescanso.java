@@ -2,7 +2,6 @@
 import static java.lang.Thread.sleep;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;

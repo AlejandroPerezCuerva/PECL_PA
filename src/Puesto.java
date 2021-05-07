@@ -1,5 +1,4 @@
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JTextField;
 
 public class Puesto {
@@ -25,7 +24,7 @@ public class Puesto {
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
     }
-    
+
     public boolean isDisponible() {
         return disponible;
     }

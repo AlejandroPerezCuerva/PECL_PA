@@ -3,7 +3,6 @@ import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
@@ -19,7 +18,6 @@ public class SalaObservacion {
     private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
     private JTextField salidaTextField;
     private BlockingQueue capacidadObservacion;
-    private Semaphore semEsperaPaciente= new Semaphore(0);
     private BlockingQueue pacientesObservacion;
 
     public SalaObservacion(int aforoObservacion, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField, BlockingQueue pacientesObservacion) {
@@ -32,7 +30,7 @@ public class SalaObservacion {
         }
         this.capacidadObservacion = new LinkedBlockingQueue(aforoObservacion);
         this.salidaTextField = salidaTextField;
-         this.pacientesObservacion=pacientesObservacion;
+        this.pacientesObservacion = pacientesObservacion;
     }
 
     public boolean puestoLibre() {
@@ -49,7 +47,7 @@ public class SalaObservacion {
     public void entraPaciente(Paciente paciente) {
         try {
             paciente.getSalaVacunacion().getPuestos().get(paciente.getPuesto()).setDisponiblePaciente(true); //Hasta que el paciente no entra en la sala de observación no deja libre su puesto en la sala de vacunación
-            
+
             capacidadObservacion.put(paciente);//Entra el paciente y el semaforo hace aquire
             int i = 0;
             boolean puestoObtenido = false;
@@ -72,39 +70,49 @@ public class SalaObservacion {
         boolean reaccion = (int) (100 * Math.random()) <= 5; //En el 5% de los casos el paciente sufre efectos adversos
         try {
             sleep(10000); //El paciente está 10 segundos es la observación 
-             if (reaccion) {
+            if (reaccion) {
                 System.out.println("***El paciente " + paciente.toString() + " se encuentra mal***");
                 pacientesObservacion.put(paciente);
                 paciente.getReaccionVacuna().set(true);//El paciente tiene una reaccion a la vacuna                
-            }else{
-            paciente.getSemObservar().release();
-            puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
-            capacidadObservacion.take();
-            puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
-            paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
+            } else {
+                paciente.getSemObservar().release();
+                puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
+                capacidadObservacion.take();
+                puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
+                paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(SalaObservacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void atenderPaciente(Sanitario sanitario, Paciente paciente){
-            try {
-                sleep((int)(3000*Math.random()+2000));//Tarda entre 2 y 5 segundos
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SalaDescanso.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            paciente.getReaccionVacuna().set(false);
-            paciente.getSalaObservacion().getSemEspeaPaciente().release();//El sanitario indica que no hay problema con el paciente
-            paciente.getSemObservar().release();
-            System.out.println("***El paciente " + paciente.toString() + " tiene el visto bueno***");
-            try{puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
-                capacidadObservacion.take();
-                puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
-                paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
-            }catch(Exception e){}
+    public void atenderPaciente(Sanitario sanitario, Paciente paciente) throws InterruptedException {
+        /*
+        mirar si es mejor que se haga el take directamente aquí en el metodo
+        y no en el run del sanitario
+         */
+
+        //Cogemos lo que hay en el JTextField y le añadimos el sanitario para que le cure
+        String puestoCurar = "";
+        puestoCurar = puestos.get(paciente.getPuesto()).getJtfPuesto().getText() + "," + sanitario.toString();
+        puestos.get(paciente.getPuesto()).getJtfPuesto().setText(puestoCurar);
+
+        //El sanitario y el pacienten hacen el sleep para ver la reacción del paciente a la vacuna
+        sleep((int) (3000 * Math.random() + 2000));//Tarda entre 2 y 5 segundos
+        paciente.getReaccionVacuna().set(false);
+        paciente.getSemObservar().release();
+        System.out.println("***El paciente " + paciente.toString() + " tiene el visto bueno***");
+        puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
+        capacidadObservacion.take();
+        puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
+        paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
+
     }
-    
+
+    public void setPacientesObservacion(BlockingQueue pacientesObservacion) {
+        this.pacientesObservacion = pacientesObservacion;
+    }
+
     public void salirHospital(Paciente paciente) {
         salidaTextField.setText(paciente.toString());
     }
@@ -156,12 +164,9 @@ public class SalaObservacion {
     public void setCapacidadObservacion(BlockingQueue capacidadObservacion) {
         this.capacidadObservacion = capacidadObservacion;
     }
-    public Semaphore getSemEspeaPaciente(){
-        return semEsperaPaciente;
-    }
 
     public BlockingQueue getPacientesObservacion() {
         return pacientesObservacion;
     }
-    
+
 }

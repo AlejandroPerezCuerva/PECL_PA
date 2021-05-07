@@ -36,14 +36,14 @@ public class Sanitario extends Thread {
                 salaVacunacion.colocarSanitarios(this);
                 salaVacunacion.vacunarPaciente(this);
                 salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
+                
+                //Si la cola de pacientes de reaccion no está vacía significa que hay un paciente que requiere de un sanitario
                 if (!salaObservacion.getPacientesObservacion().isEmpty()) {
                     salaObservacion.atenderPaciente(this,(Paciente) (salaObservacion.getPacientesObservacion().take()));
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Sanitario.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            //Hay que poner un if para saber si hay un paciente que necesita ser revisado en observación
         }
     }
 
