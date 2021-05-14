@@ -1,0 +1,113 @@
+14/05/2021 21:24:52		El sanitario S03 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S01 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S02 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S04 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S05 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S06 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S07 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S08 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S09 empieza a cambiarse
+14/05/2021 21:24:52		El sanitario S10 empieza a cambiarse
+14/05/2021 21:24:53		El sanitario S04 termina de cambiarse
+14/05/2021 21:24:53		El sanitario S09 termina de cambiarse
+14/05/2021 21:24:53		El sanitario S06 termina de cambiarse
+14/05/2021 21:24:53		El sanitario S10 termina de cambiarse
+14/05/2021 21:24:54		El sanitario S05 termina de cambiarse
+14/05/2021 21:24:54		El sanitario S08 termina de cambiarse
+14/05/2021 21:24:54		El sanitario S02 termina de cambiarse
+14/05/2021 21:24:55		El paciente P0000 se vacunara en el puesto 5 por S05
+14/05/2021 21:24:55		El sanitario S01 termina de cambiarse
+14/05/2021 21:24:55		El sanitario S07 termina de cambiarse
+14/05/2021 21:24:55		El sanitario S03 termina de cambiarse
+14/05/2021 21:24:56		El paciente P0001 se vacunara en el puesto 4 por S10
+14/05/2021 21:24:58		El paciente P0002 se vacunara en el puesto 2 por S09
+14/05/2021 21:25:00		El paciente P0003 se vacunara en el puesto 5 por S05
+14/05/2021 21:25:03		El paciente P0004 se vacunara en el puesto 9 por S07
+14/05/2021 21:25:04		El paciente P0005 se vacunara en el puesto 10 por S03
+14/05/2021 21:25:04		El sanitario S08 empieza su descanso
+14/05/2021 21:25:06		El paciente P0006 se vacunara en el puesto 8 por S01
+14/05/2021 21:25:07		El auxiliar A2 comienza su descanso
+14/05/2021 21:25:07		El paciente P0007 se vacunara en el puesto 7 por S02
+14/05/2021 21:25:08		El auxiliar A2 termina su descanso
+14/05/2021 21:25:09		El paciente P0000 se va del Hospital
+14/05/2021 21:25:10		El paciente P0008 se vacunara en el puesto 3 por S06
+14/05/2021 21:25:10		El sanitario S08 termina su descanso
+14/05/2021 21:25:11		El paciente P0001 se va del Hospital
+14/05/2021 21:25:11		El paciente P0009 se vacunara en el puesto 6 por S08
+14/05/2021 21:25:11		El auxiliar A1 comienza su descanso
+14/05/2021 21:25:12		El paciente P0002 se va del Hospital
+14/05/2021 21:25:14		El auxiliar A1 termina su descanso
+14/05/2021 21:25:14		El paciente P0003 se va del Hospital
+14/05/2021 21:25:15		El paciente P0010 se vacunara en el puesto 2 por S09
+14/05/2021 21:25:16		El paciente P0011 se vacunara en el puesto 1 por S04
+14/05/2021 21:25:17		El paciente P0005 se va del Hospital
+14/05/2021 21:25:17		El paciente P0004 se va del Hospital
+14/05/2021 21:25:17		El paciente P0012 se vacunara en el puesto 4 por S10
+14/05/2021 21:25:18		El sanitario S09 empieza su descanso
+14/05/2021 21:25:19		El paciente P0013 se vacunara en el puesto 6 por S08
+14/05/2021 21:25:19		El paciente P0006 se va del Hospital
+14/05/2021 21:25:20		El paciente P0014 se vacunara en el puesto 8 por S01
+14/05/2021 21:25:21		El paciente P0007 se va del Hospital
+14/05/2021 21:25:23		El paciente P0015 se vacunara en el puesto 5 por S05
+14/05/2021 21:25:23		El auxiliar A2 comienza su descanso
+14/05/2021 21:25:23		El paciente P0008 se va del Hospital
+14/05/2021 21:25:25		El paciente P0009 se va del Hospital
+14/05/2021 21:25:26		El sanitario S09 termina su descanso
+14/05/2021 21:25:26		El paciente P0016 se vacunara en el puesto 3 por S06
+14/05/2021 21:25:26		El auxiliar A2 termina su descanso
+14/05/2021 21:25:27		El paciente P0017 se vacunara en el puesto 8 por S01
+14/05/2021 21:25:28		El paciente P0010 se va del Hospital
+14/05/2021 21:25:30		El paciente P0018 se vacunara en el puesto 3 por S06
+14/05/2021 21:25:30		El sanitario S05 empieza su descanso
+14/05/2021 21:25:30		El paciente P0011 se va del Hospital
+14/05/2021 21:25:31		El paciente P0012 muestra sintomas
+14/05/2021 21:25:32		El paciente P0019 se vacunara en el puesto 5 por 
+14/05/2021 21:25:32		El auxiliar A1 comienza su descanso
+14/05/2021 21:25:33		El paciente P0013 se va del Hospital
+14/05/2021 21:25:34		El paciente P0014 muestra sintomas
+14/05/2021 21:25:36		El paciente P0015 se va del Hospital
+14/05/2021 21:25:37		El auxiliar A1 termina su descanso
+14/05/2021 21:25:37		El sanitario S07 empieza su descanso
+14/05/2021 21:25:37		El paciente P0020 se vacunara en el puesto 4 por S10
+14/05/2021 21:25:37		El sanitario S05 termina su descanso
+14/05/2021 21:25:37		Paciente P0014sufre una reacción y es atendido por S05
+14/05/2021 21:25:38		El paciente P0021 se vacunara en el puesto 10 por S03
+14/05/2021 21:25:39		El paciente P0022 se vacunara en el puesto 2 por S09
+14/05/2021 21:25:40		El paciente P0016 se va del Hospital
+14/05/2021 21:25:40		El paciente P0023 se vacunara en el puesto 9 por 
+14/05/2021 21:25:40		El auxiliar A2 comienza su descanso
+14/05/2021 21:25:41		El paciente P0017 se va del Hospital
+14/05/2021 21:25:41		El paciente P0014 se va del Hospital
+14/05/2021 21:25:41		Al paciente P0014 se le da el alta
+14/05/2021 21:25:42		El auxiliar A2 termina su descanso
+14/05/2021 21:25:43		El paciente P0024 se vacunara en el puesto 7 por S02
+14/05/2021 21:25:43		El paciente P0018 se va del Hospital
+14/05/2021 21:25:44		El sanitario S07 termina su descanso
+14/05/2021 21:25:44		Paciente P0018sufre una reacción y es atendido por S07
+14/05/2021 21:25:45		El paciente P0025 se vacunara en el puesto 8 por S01
+14/05/2021 21:25:47		Al paciente P0018 se le da el alta
+14/05/2021 21:25:47		El paciente P0026 se vacunara en el puesto 4 por S10
+14/05/2021 21:25:49		El paciente P0027 se vacunara en el puesto 10 por S03
+14/05/2021 21:25:52		El paciente P0028 se vacunara en el puesto 9 por S07
+14/05/2021 21:25:52		El paciente P0020 se va del Hospital
+14/05/2021 21:25:53		El paciente P0021 muestra sintomas
+14/05/2021 21:25:53		El paciente P0022 se va del Hospital
+14/05/2021 21:25:54		El paciente P0019 se va del Hospital
+14/05/2021 21:25:54		El paciente P0029 se vacunara en el puesto 1 por S04
+14/05/2021 21:25:54		El auxiliar A1 comienza su descanso
+14/05/2021 21:25:57		El paciente P0024 se va del Hospital
+14/05/2021 21:25:57		El auxiliar A2 comienza su descanso
+14/05/2021 21:25:59		El auxiliar A1 termina su descanso
+14/05/2021 21:26:00		El paciente P0030 se vacunara en el puesto 2 por S09
+14/05/2021 21:26:00		El paciente P0025 se va del Hospital
+14/05/2021 21:26:00		El auxiliar A2 termina su descanso
+14/05/2021 21:26:00		El paciente P0031 se vacunara en el puesto 7 por S02
+14/05/2021 21:26:01		El paciente P0023 se va del Hospital
+14/05/2021 21:26:01		El paciente P0032 se vacunara en el puesto 4 por S10
+14/05/2021 21:26:01		El paciente P0026 se va del Hospital
+14/05/2021 21:26:02		El paciente P0033 se vacunara en el puesto 8 por S01
+14/05/2021 21:26:03		El paciente P0027 se va del Hospital
+14/05/2021 21:26:03		El paciente P0034 se vacunara en el puesto 5 por S05
+14/05/2021 21:26:05		El paciente P0028 se va del Hospital
+14/05/2021 21:26:06		El paciente P0035 se vacunara en el puesto 7 por S02
+14/05/2021 21:26:08		El paciente P0036 se vacunara en el puesto 6 por S08
