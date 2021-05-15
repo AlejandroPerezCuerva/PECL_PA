@@ -2,6 +2,7 @@ package Principal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +18,9 @@ public class Sanitario extends Thread {
     private SalaVacunacion salaVacunacion;
     private SalaObservacion salaObservacion;
     private ArrayList<AtomicInteger> contadoresSanitarios;
-    private int puesto, numeroSanitario;//****numeroSanitario sobra?*****/
+    private int puesto, numeroSanitario;//****numeroSanitario sobra?*****/ Se utiliza en observación
+    private AtomicBoolean sanitarioDescansaDistribuida; //Es un booleano para que el sanitario cuando esté descansado porque se lo ha dicho el cliente, 
+    //vaya directamente a colocarse otra vez en el puesto y no vaya a atender a alguien que le ha dado reaccion
 
     public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
@@ -27,6 +30,7 @@ public class Sanitario extends Thread {
         this.contadoresSanitarios = contadoresSanitarios;
         this.numeroSanitario = num - 1;
         this.puesto = 0;
+        this.sanitarioDescansaDistribuida = new AtomicBoolean(false);
     }
 
     public void run() {
@@ -40,7 +44,8 @@ public class Sanitario extends Thread {
                 salaDescanso.descansoSanitarios(this, 8000, 5000); //El sanitario descansa entre 5 y 8 segundos
 
                 //Si la cola de pacientes de reaccion no está vacía significa que hay un paciente que requiere de un sanitario
-                if (!salaObservacion.getPacientesObservacion().isEmpty()) {
+                //El sanitario solo puede estar cuando el booleano este a false porque sino tiene que colocarse en el puesto despues de limpiar el puesto en distribuida
+                if (!salaObservacion.getPacientesObservacion().isEmpty() && !sanitarioDescansaDistribuida.get()) {
                     salaObservacion.atenderPaciente(this);
                 }
             }
@@ -74,6 +79,14 @@ public class Sanitario extends Thread {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public AtomicBoolean getSanitarioDescansaDistribuida() {
+        return sanitarioDescansaDistribuida;
+    }
+
+    public void setSanitarioDescansaDistribuida(AtomicBoolean sanitarioDescansaDistribuida) {
+        this.sanitarioDescansaDistribuida = sanitarioDescansaDistribuida;
     }
 
     public SalaDescanso getSalaDescanso() {

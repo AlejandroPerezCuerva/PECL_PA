@@ -25,7 +25,7 @@ public class SalaObservacion {
     private BlockingQueue pacientesObservacion;
     private BufferedWriter fichero;
     private Date objDate;
-    private DateFormat diaHora= new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     public SalaObservacion(int aforoObservacion, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField, BlockingQueue pacientesObservacion, BufferedWriter fichero) {
         this.aforoObservacion = aforoObservacion;
@@ -74,7 +74,8 @@ public class SalaObservacion {
 
         sleep(10000); //El paciente está 10 segundos es la observación 
         if (reaccion) {
-            objDate=new Date();
+            capacidadObservacion.take(); //También hay que sacar al paciente de esta lista
+            objDate = new Date();
             String mensaje = diaHora.format(objDate) + "\t\tEl paciente " + paciente.toString() + " muestra sintomas\n";
             System.out.print(mensaje);
             fichero.write(mensaje);
@@ -95,9 +96,9 @@ public class SalaObservacion {
 
     public void atenderPaciente(Sanitario sanitario) throws InterruptedException, IOException {
         //Cuando llega el sanitario, saca al paciente que va a atender de la cola        
-        Paciente paciente = (Paciente) capacidadObservacion.take();
-        objDate=new Date();
-        String mensaje = diaHora.format(objDate) + "\t\tPaciente " + paciente.toString() + "sufre una reacción y es atendido por " + sanitario.toString() + "\n";
+        Paciente paciente = (Paciente) pacientesObservacion.take();
+        objDate = new Date();
+        String mensaje = diaHora.format(objDate) + "\t\tPaciente " + paciente.toString() + " sufre una reacción y es atendido por " + sanitario.toString() + "\n";
         System.out.print(mensaje);
         fichero.write(mensaje);
         fichero.flush();
@@ -111,7 +112,7 @@ public class SalaObservacion {
         sleep((int) (3000 * Math.random() + 2000));//Tarda entre 2 y 5 segundos
         paciente.getReaccionVacuna().set(false);
         paciente.getSemObservar().release();
-        objDate=new Date();
+        objDate = new Date();
         mensaje = diaHora.format(objDate) + "\t\tAl paciente " + paciente.toString() + " se le da el alta\n";
         System.out.print(mensaje);
         fichero.write(mensaje);
@@ -126,28 +127,28 @@ public class SalaObservacion {
 
     //El paciente sale del hospital
     public void salirHospital(Paciente paciente) throws IOException {
-            objDate=new Date();
-            String mensaje = diaHora.format(objDate) + "\t\tEl paciente " + paciente.toString() + " se va del Hospital\n";
-            System.out.print(mensaje);
-            fichero.write(mensaje);
-            fichero.flush();
+        objDate = new Date();
+        String mensaje = diaHora.format(objDate) + "\t\tEl paciente " + paciente.toString() + " se va del Hospital\n";
+        System.out.print(mensaje);
+        fichero.write(mensaje);
+        fichero.flush();
         salidaTextField.setText(paciente.toString());
     }
 
-    public ArrayList<String> crearMensajeObservacion(){//Se crea un array con el contenido de los 20 puestos para enviarlo al cliente
-        ArrayList<String> mensaje= new ArrayList<String>();
+    public ArrayList<String> crearMensajeObservacion() {//Se crea un array con el contenido de los 20 puestos para enviarlo al cliente
+        ArrayList<String> mensaje = new ArrayList<String>();
         for (int i = 0; i < puestos.size(); i++) {
             mensaje.add(puestos.get(i).getJtfPuesto().getText());
         }
         return mensaje;
     }
-    
-    public void recibirMensaje(ArrayList<String> mensaje){//Se imprime por pantalla el contenido de los 20 puestos del servidor
+
+    public void recibirMensaje(ArrayList<String> mensaje) {//Se imprime por pantalla el contenido de los 20 puestos del servidor
         for (int i = 0; i < mensaje.size(); i++) {
             puestosObservacion.get(i).setText(mensaje.get(i));
         }
     }
-    
+
     public BufferedWriter getFichero() {
         return fichero;
     }

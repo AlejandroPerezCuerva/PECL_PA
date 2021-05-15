@@ -32,7 +32,7 @@ public class HiloServidor extends Thread {
 
     public void run() {
         try {
-            server = new ServerSocket(5001);
+            server = new ServerSocket(5002);
             //El hilo servidor va aceptando todas las peticiones que le entran de los clientes
             while (true) {
 

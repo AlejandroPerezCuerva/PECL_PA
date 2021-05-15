@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public class HiloConexion extends Thread {
 
     private Socket conexion;
-    private DataInputStream entradaBooleano, entradaBoton;
-    private boolean boleanoBotones = false;
+    private DataInputStream entradaBooleano, entradaBoton, entradaInformar;
+    private boolean boleanoBotones = false, clienteInformar = false;
     private int puestoBoton = 0;
     private Recepcion recepcion;
     private SalaVacunacion salaVacunacion;
@@ -37,6 +37,7 @@ public class HiloConexion extends Thread {
             this.salaObservacion = salaObservacion;
             this.salaDescanso = salaDescanso;
             entradaBooleano = new DataInputStream(conexion.getInputStream());
+            entradaInformar = new DataInputStream(conexion.getInputStream());
             entradaBoton = new DataInputStream(conexion.getInputStream());
         } catch (IOException ex) {
             Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
@@ -46,15 +47,14 @@ public class HiloConexion extends Thread {
     public void run() {
         while (true) {
             try {
+                char clienteInformar = entradaInformar.readChar();
 
-                
                 //Recogemos todos los datos necesarios para enviar al cliente
                 arrayRecepcion = recepcion.crearMensajeRecepcion();
                 arrayVacunacion = salaVacunacion.crearMensajeVacunacion();
                 arrayObservacion = salaObservacion.crearMensajeObservacion();
                 stringDescanso = salaDescanso.crearMensajeDescanso();
 
-                int suma = arrayRecepcion.size() + arrayVacunacion.size() + arrayObservacion.size() + 1;
                 //Enviamos todos los datos al cliente
                 for (int i = 0; i < arrayRecepcion.size(); i++) {
                     DataOutputStream salida = new DataOutputStream(conexion.getOutputStream());
@@ -74,8 +74,6 @@ public class HiloConexion extends Thread {
                 DataOutputStream salida = new DataOutputStream(conexion.getOutputStream());
                 salida.writeUTF(stringDescanso);
 
-                
-                
                 boleanoBotones = entradaBooleano.readBoolean();
                 puestoBoton = entradaBoton.readInt();
                 //Si está a true es porque se ha pulsado un botón
@@ -87,13 +85,10 @@ public class HiloConexion extends Thread {
                             salaVacunacion.cerrarPuesto(i);
                         }
                     }
+
                 }
 
-                sleep(1000);
-
             } catch (IOException ex) {
-                Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
                 Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

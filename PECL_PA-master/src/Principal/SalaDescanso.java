@@ -96,6 +96,7 @@ public class SalaDescanso {
         sleep((int) ((maximo - minimo) * Math.random() + minimo)); //Sleep de 5 a 8 segundos que es lo que tardan en descansar
         colaSala.take();
         colaSalaDescanso.setText(colaSala.toString()); //Se actualiza el JTextFiel con los Sanitarios que han ido saliendo
+        
 
         objDate = new Date();
         mensaje = diaHora.format(objDate) + "\t\tEl sanitario " + sanitario + " termina su descanso\n";

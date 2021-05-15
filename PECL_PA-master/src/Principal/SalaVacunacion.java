@@ -35,7 +35,7 @@ public class SalaVacunacion {
         this.colaVacunar = new LinkedBlockingQueue(aforoVacunacion);
         this.contadorVacunas = new AtomicInteger(0); //Inicializamos el contador de las vacunas
         this.sinVacunas = new Semaphore(0);
-        this.puestoCerrado = new AtomicInteger(15);
+        this.puestoCerrado = new AtomicInteger(-1); //Se inicializa a -1 para que no afecte a ningun sanitario
     }
 
     //Método para el auxiliar 2, genera 20 dosis con el periodo indicado. Tiene un contador que llega hasta 20
@@ -66,7 +66,8 @@ public class SalaVacunacion {
             }
             i++;
         }
-        
+        sanitario.getSanitarioDescansaDistribuida().set(false); //Se pone a false para que el sanitario después de vacunar pueda atender al paciente que esta enfermo
+
     }
 
     //procedimiento para meter al paciente en la salaVacunacion
@@ -114,15 +115,22 @@ public class SalaVacunacion {
             } else {
                 colaVacunar.add(paciente);
             }
-            
+
             //Si el sanitario está en el puesto que el cliente quiere cerrar, se tiene que ir a descansar
-            if(sanitario.getPuesto() == puestoCerrado.get()){
+            if (sanitario.getPuesto() == puestoCerrado.get()) {
                 sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).set(15);
-                puestoCerrado.set(110); //Se reinicia el puesto cerrado
+                sanitario.getSanitarioDescansaDistribuida().set(true);
+                puestoCerrado.set(-1); //Se reinicia el puesto cerrado
+
             }
         }
         puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(""); //Cuando se va a descansar se pone el JTextField limpio
         puestos.get(sanitario.getPuesto()).setDisponible(true); //Cuando terminan de vacunar avisan de que su puesto está disponible
+        
+        //Si el sanitario abandona porque se va a limpiar la sala se pone en el JTextField
+        if (sanitario.getSanitarioDescansaDistribuida().get()) {
+            puestos.get(sanitario.getPuesto()).getJtfPuesto().setText("Limpiando");
+        }
     }
 
     public ArrayList<String> crearMensajeVacunacion() {//Se crea un array con el contenido de la sala de vacunacion para enviarlo al cliente
@@ -131,7 +139,7 @@ public class SalaVacunacion {
             mensaje.add(puestos.get(i).getJtfPuesto().getText());
         }
         mensaje.add(auxiliarVacunacion.getText());
-        mensaje.add(numeroVacunas.getText() +"");
+        mensaje.add(numeroVacunas.getText() + "");
         return mensaje;
     }
 
@@ -145,7 +153,7 @@ public class SalaVacunacion {
     }
 
     public void cerrarPuesto(int puesto) {
-        puestoCerrado.set(puesto); 
+        puestoCerrado.set(puesto);
     }
 
     public void setPuestos(ArrayList<Puesto> puestos) {

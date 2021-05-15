@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextField;
 
 /**
  *
@@ -16,74 +17,66 @@ import java.util.logging.Logger;
 public class MainClient extends javax.swing.JFrame {
 
     private Socket cliente;
-    private ArrayList<DataInputStream> arrayEntradas = new ArrayList<>();
+    private HiloClient hiloClient;
+    private ArrayList<JTextField> arrayJTexField = new ArrayList<>();
 
     /**
      * Creates new form Main
      */
     public MainClient() {
-        initComponents();
         try {
-            cliente = new Socket(InetAddress.getLocalHost(), 5001); //El cliente se conecta al servidor
+            initComponents();
+            cliente = new Socket(InetAddress.getLocalHost(), 5002); //El cliente se conecta al servidor
             System.out.println("Conexion establecida");
-
-            //recibirMensajes();
-        } catch (Exception ex) {
-            System.out.println(ex);
+            
+            arrayJTexField = crearArrayJTextFields();
+            hiloClient = new HiloClient(cliente, arrayJTexField, colaRecepcion, colaSalaDescanso, botonRefrescar);
+            hiloClient.start();
+        } catch (IOException ex) {
+            Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
-    public void recibirMensajes() throws IOException, InterruptedException {
-        while (true) {
-            for (int i = 0; i < 36; i++) {
-                DataInputStream entrada = new DataInputStream(cliente.getInputStream());
-                arrayEntradas.add(entrada);
-            }
+    public ArrayList crearArrayJTextFields() throws IOException, InterruptedException {
+        arrayJTexField.add(pacienteRecepcion);
+        arrayJTexField.add(auxiliarRecepcion);
+        arrayJTexField.add(puesto1);
+        arrayJTexField.add(puesto2);
+        arrayJTexField.add(puesto3);
+        arrayJTexField.add(puesto4);
+        arrayJTexField.add(puesto5);
+        arrayJTexField.add(puesto6);
+        arrayJTexField.add(puesto7);
+        arrayJTexField.add(puesto8);
+        arrayJTexField.add(puesto9);
+        arrayJTexField.add(puesto10);
+        arrayJTexField.add(auxiliarVacunacion);
+        arrayJTexField.add(numeroVacunas);
+        arrayJTexField.add(puestoO1);
+        arrayJTexField.add(puestoO2);
+        arrayJTexField.add(puestoO3);
+        arrayJTexField.add(puestoO4);
+        arrayJTexField.add(puestoO5);
+        arrayJTexField.add(puestoO6);
+        arrayJTexField.add(puestoO7);
+        arrayJTexField.add(puestoO8);
+        arrayJTexField.add(puestoO9);
+        arrayJTexField.add(puestoO10);
+        arrayJTexField.add(puestoO11);
+        arrayJTexField.add(puestoO12);
+        arrayJTexField.add(puestoO13);
+        arrayJTexField.add(puestoO14);
+        arrayJTexField.add(puestoO15);
+        arrayJTexField.add(puestoO16);
+        arrayJTexField.add(puestoO17);
+        arrayJTexField.add(puestoO18);
+        arrayJTexField.add(puestoO19);
+        arrayJTexField.add(puestoO20);
 
-            //Lo que primero nos llega son los datos de la recepción
-            colaRecepcion.setText(arrayEntradas.get(0).readUTF());
-            pacienteRecepcion.setText(arrayEntradas.get(1).readUTF());
-            auxiliarRecepcion.setText(arrayEntradas.get(2).readUTF());
-
-            //Ahora llegan los datos de la sala de vacunación
-            puesto1.setText(arrayEntradas.get(3).readUTF());
-            puesto2.setText(arrayEntradas.get(4).readUTF());
-            puesto3.setText(arrayEntradas.get(5).readUTF());
-            puesto4.setText(arrayEntradas.get(6).readUTF());
-            puesto5.setText(arrayEntradas.get(7).readUTF());
-            puesto6.setText(arrayEntradas.get(8).readUTF());
-            puesto7.setText(arrayEntradas.get(9).readUTF());
-            puesto8.setText(arrayEntradas.get(10).readUTF());
-            puesto9.setText(arrayEntradas.get(11).readUTF());
-            puesto10.setText(arrayEntradas.get(12).readUTF());
-            auxiliarVacunacion.setText(arrayEntradas.get(13).readUTF());
-            numeroVacunas.setText(arrayEntradas.get(14).readUTF());
-
-            //Toca el turno de la sala de observación
-            puestoO1.setText(arrayEntradas.get(15).readUTF());
-            puestoO2.setText(arrayEntradas.get(16).readUTF());
-            puestoO3.setText(arrayEntradas.get(17).readUTF());
-            puestoO4.setText(arrayEntradas.get(18).readUTF());
-            puestoO5.setText(arrayEntradas.get(19).readUTF());
-            puestoO6.setText(arrayEntradas.get(20).readUTF());
-            puestoO7.setText(arrayEntradas.get(21).readUTF());
-            puestoO8.setText(arrayEntradas.get(22).readUTF());
-            puestoO9.setText(arrayEntradas.get(23).readUTF());
-            puestoO10.setText(arrayEntradas.get(24).readUTF());
-            puestoO11.setText(arrayEntradas.get(25).readUTF());
-            puestoO12.setText(arrayEntradas.get(26).readUTF());
-            puestoO13.setText(arrayEntradas.get(27).readUTF());
-            puestoO14.setText(arrayEntradas.get(28).readUTF());
-            puestoO15.setText(arrayEntradas.get(29).readUTF());
-            puestoO16.setText(arrayEntradas.get(30).readUTF());
-            puestoO17.setText(arrayEntradas.get(31).readUTF());
-            puestoO18.setText(arrayEntradas.get(32).readUTF());
-            puestoO19.setText(arrayEntradas.get(33).readUTF());
-            puestoO20.setText(arrayEntradas.get(34).readUTF());
-
-            //Por ultimo llega el string de la sala de descanso
-            colaSalaDescanso.setText(arrayEntradas.get(35).readUTF());
-        }
+        return arrayJTexField;
     }
 
     /**
@@ -144,6 +137,7 @@ public class MainClient extends javax.swing.JFrame {
         botonCerrar8 = new javax.swing.JButton();
         botonCerrar9 = new javax.swing.JButton();
         botonCerrar10 = new javax.swing.JButton();
+        botonRefrescar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
@@ -455,6 +449,13 @@ public class MainClient extends javax.swing.JFrame {
             }
         });
 
+        botonRefrescar.setText("Refrescar");
+        botonRefrescar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonRefrescarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -463,85 +464,84 @@ public class MainClient extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(739, 739, 739)
-                                .addComponent(numeroVacunas, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGap(122, 122, 122)
-                                                .addComponent(jLabel13))
-                                            .addComponent(jLabel12)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                    .addComponent(botonCerrar6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                    .addComponent(puesto6, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                    .addComponent(puesto7, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                                    .addComponent(botonCerrar7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel14)
-                                            .addComponent(puesto8, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                            .addComponent(botonCerrar8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel15)
-                                            .addComponent(puesto9, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                            .addComponent(botonCerrar9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(puesto10, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                            .addComponent(botonCerrar10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(32, 32, 32))
-                                            .addComponent(puesto1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonCerrar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(12, 12, 12)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(puesto2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonCerrar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(10, 10, 10)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(puesto3, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
-                                            .addComponent(jLabel9)
-                                            .addComponent(botonCerrar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(puesto4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(jLabel10)))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                                .addGap(12, 12, 12)
-                                                .addComponent(botonCerrar4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(jLabel11)
-                                                    .addComponent(puesto5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                                .addGap(12, 12, 12)
-                                                .addComponent(botonCerrar5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                                .addGap(151, 151, 151)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(auxiliarVacunacion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel18)
-                                    .addComponent(jLabel17)))))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGap(122, 122, 122)
+                                        .addComponent(jLabel13))
+                                    .addComponent(jLabel12)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(botonCerrar6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(puesto6, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(puesto7, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                            .addComponent(botonCerrar7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel14)
+                                    .addComponent(puesto8, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(botonCerrar8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel15)
+                                    .addComponent(puesto9, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(botonCerrar9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(puesto10, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(botonCerrar10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(32, 32, 32))
+                                    .addComponent(puesto1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonCerrar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(12, 12, 12)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(puesto2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonCerrar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(puesto3, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+                                    .addComponent(jLabel9)
+                                    .addComponent(botonCerrar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(puesto4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel10)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(botonCerrar4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel11)
+                                            .addComponent(puesto5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(botonCerrar5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(151, 151, 151)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(auxiliarVacunacion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17)
+                            .addComponent(numeroVacunas, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                                .addComponent(botonRefrescar))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(487, 487, 487)
                         .addComponent(jLabel3)))
-                .addContainerGap(363, Short.MAX_VALUE))
+                .addGap(124, 124, 124))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -567,10 +567,12 @@ public class MainClient extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel18)
+                            .addComponent(botonRefrescar))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(numeroVacunas, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
                             .addComponent(jLabel13)
@@ -854,14 +856,15 @@ public class MainClient extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(salidaTextField)
                     .addComponent(jLabel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(559, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel40)
                 .addGap(12, 12, 12)
-                .addComponent(salidaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(salidaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -875,12 +878,15 @@ public class MainClient extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -893,9 +899,9 @@ public class MainClient extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -942,7 +948,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -973,7 +979,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1000,7 +1006,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1015,7 +1021,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1030,7 +1036,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1045,7 +1051,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1060,7 +1066,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1075,7 +1081,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1090,7 +1096,7 @@ public class MainClient extends javax.swing.JFrame {
         try {
             // TODO add your handling code here:
             DataOutputStream salida, mensaje;
-            
+
             salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
@@ -1099,6 +1105,19 @@ public class MainClient extends javax.swing.JFrame {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_botonCerrar10ActionPerformed
+
+    private void botonRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonRefrescarActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            DataOutputStream salida;
+
+            salida = new DataOutputStream(cliente.getOutputStream());//Se crea el canal de salida
+            salida.writeChar('a');
+        } catch (IOException ex) {
+            Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_botonRefrescarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1150,6 +1169,7 @@ public class MainClient extends javax.swing.JFrame {
     private javax.swing.JButton botonCerrar7;
     private javax.swing.JButton botonCerrar8;
     private javax.swing.JButton botonCerrar9;
+    private javax.swing.JButton botonRefrescar;
     private javax.swing.JTextArea colaRecepcion;
     private javax.swing.JTextArea colaSalaDescanso;
     private javax.swing.JLabel jLabel1;
