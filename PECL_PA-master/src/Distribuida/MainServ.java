@@ -18,6 +18,12 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.accessibility.AccessibleContext;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -43,7 +49,6 @@ public class MainServ extends javax.swing.JFrame {
     private File archivo; //De esta manera se guarda el fichero en la propia carpeta del proyecto y no hace falta poner la ruta
     private BufferedWriter fichero;
 
-    
     private HiloServidor hiloServidor;
 
     /**
@@ -116,11 +121,10 @@ public class MainServ extends javax.swing.JFrame {
         Auxiliar a2 = new Auxiliar(2, contadorAux2, salaVacunacion, salaDescanso);
         a1.start();
         a2.start();
-        
+
         hiloServidor = new HiloServidor(recepcion, salaVacunacion, salaObservacion, salaDescanso);
         hiloServidor.start();
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -875,8 +879,824 @@ public class MainServ extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(MainServ.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_formWindowClosing
+
+    public Recepcion getRecepcion() {
+        return recepcion;
+    }
+
+    public void setRecepcion(Recepcion recepcion) {
+        this.recepcion = recepcion;
+    }
+
+    public CrearPacientes getCrearPacientes() {
+        return crearPacientes;
+    }
+
+    public void setCrearPacientes(CrearPacientes crearPacientes) {
+        this.crearPacientes = crearPacientes;
+    }
+
+    public SalaDescanso getSalaDescanso() {
+        return salaDescanso;
+    }
+
+    public void setSalaDescanso(SalaDescanso salaDescanso) {
+        this.salaDescanso = salaDescanso;
+    }
+
+    public SalaVacunacion getSalaVacunacion() {
+        return salaVacunacion;
+    }
+
+    public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
+        this.salaVacunacion = salaVacunacion;
+    }
+
+    public SalaObservacion getSalaObservacion() {
+        return salaObservacion;
+    }
+
+    public void setSalaObservacion(SalaObservacion salaObservacion) {
+        this.salaObservacion = salaObservacion;
+    }
+
+    public AtomicInteger getContadorAux1() {
+        return contadorAux1;
+    }
+
+    public void setContadorAux1(AtomicInteger contadorAux1) {
+        this.contadorAux1 = contadorAux1;
+    }
+
+    public AtomicInteger getContadorAux2() {
+        return contadorAux2;
+    }
+
+    public void setContadorAux2(AtomicInteger contadorAux2) {
+        this.contadorAux2 = contadorAux2;
+    }
+
+    public ArrayList<AtomicInteger> getContadoresSanitarios() {
+        return contadoresSanitarios;
+    }
+
+    public void setContadoresSanitarios(ArrayList<AtomicInteger> contadoresSanitarios) {
+        this.contadoresSanitarios = contadoresSanitarios;
+    }
+
+    public ArrayList<JTextField> getPuestosVacunacion() {
+        return puestosVacunacion;
+    }
+
+    public void setPuestosVacunacion(ArrayList<JTextField> puestosVacunacion) {
+        this.puestosVacunacion = puestosVacunacion;
+    }
+
+    public ArrayList<JTextField> getPuestosObservacion() {
+        return puestosObservacion;
+    }
+
+    public void setPuestosObservacion(ArrayList<JTextField> puestosObservacion) {
+        this.puestosObservacion = puestosObservacion;
+    }
+
+    public Semaphore getSemRegistrar() {
+        return semRegistrar;
+    }
+
+    public void setSemRegistrar(Semaphore semRegistrar) {
+        this.semRegistrar = semRegistrar;
+    }
+
+    public BlockingQueue getPacientesObservacion() {
+        return pacientesObservacion;
+    }
+
+    public void setPacientesObservacion(BlockingQueue pacientesObservacion) {
+        this.pacientesObservacion = pacientesObservacion;
+    }
+
+    public File getArchivo() {
+        return archivo;
+    }
+
+    public void setArchivo(File archivo) {
+        this.archivo = archivo;
+    }
+
+    public BufferedWriter getFichero() {
+        return fichero;
+    }
+
+    public void setFichero(BufferedWriter fichero) {
+        this.fichero = fichero;
+    }
+
+    public HiloServidor getHiloServidor() {
+        return hiloServidor;
+    }
+
+    public void setHiloServidor(HiloServidor hiloServidor) {
+        this.hiloServidor = hiloServidor;
+    }
+
+    public JTextField getAuxiliarRecepcion() {
+        return auxiliarRecepcion;
+    }
+
+    public void setAuxiliarRecepcion(JTextField auxiliarRecepcion) {
+        this.auxiliarRecepcion = auxiliarRecepcion;
+    }
+
+    public JTextField getAuxiliarVacunacion() {
+        return auxiliarVacunacion;
+    }
+
+    public void setAuxiliarVacunacion(JTextField auxiliarVacunacion) {
+        this.auxiliarVacunacion = auxiliarVacunacion;
+    }
+
+    public JTextArea getColaRecepcion() {
+        return colaRecepcion;
+    }
+
+    public void setColaRecepcion(JTextArea colaRecepcion) {
+        this.colaRecepcion = colaRecepcion;
+    }
+
+    public JTextArea getColaSalaDescanso() {
+        return colaSalaDescanso;
+    }
+
+    public void setColaSalaDescanso(JTextArea colaSalaDescanso) {
+        this.colaSalaDescanso = colaSalaDescanso;
+    }
+
+    public JLabel getjLabel1() {
+        return jLabel1;
+    }
+
+    public void setjLabel1(JLabel jLabel1) {
+        this.jLabel1 = jLabel1;
+    }
+
+    public JLabel getjLabel10() {
+        return jLabel10;
+    }
+
+    public void setjLabel10(JLabel jLabel10) {
+        this.jLabel10 = jLabel10;
+    }
+
+    public JLabel getjLabel11() {
+        return jLabel11;
+    }
+
+    public void setjLabel11(JLabel jLabel11) {
+        this.jLabel11 = jLabel11;
+    }
+
+    public JLabel getjLabel12() {
+        return jLabel12;
+    }
+
+    public void setjLabel12(JLabel jLabel12) {
+        this.jLabel12 = jLabel12;
+    }
+
+    public JLabel getjLabel13() {
+        return jLabel13;
+    }
+
+    public void setjLabel13(JLabel jLabel13) {
+        this.jLabel13 = jLabel13;
+    }
+
+    public JLabel getjLabel14() {
+        return jLabel14;
+    }
+
+    public void setjLabel14(JLabel jLabel14) {
+        this.jLabel14 = jLabel14;
+    }
+
+    public JLabel getjLabel15() {
+        return jLabel15;
+    }
+
+    public void setjLabel15(JLabel jLabel15) {
+        this.jLabel15 = jLabel15;
+    }
+
+    public JLabel getjLabel16() {
+        return jLabel16;
+    }
+
+    public void setjLabel16(JLabel jLabel16) {
+        this.jLabel16 = jLabel16;
+    }
+
+    public JLabel getjLabel17() {
+        return jLabel17;
+    }
+
+    public void setjLabel17(JLabel jLabel17) {
+        this.jLabel17 = jLabel17;
+    }
+
+    public JLabel getjLabel18() {
+        return jLabel18;
+    }
+
+    public void setjLabel18(JLabel jLabel18) {
+        this.jLabel18 = jLabel18;
+    }
+
+    public JLabel getjLabel19() {
+        return jLabel19;
+    }
+
+    public void setjLabel19(JLabel jLabel19) {
+        this.jLabel19 = jLabel19;
+    }
+
+    public JLabel getjLabel2() {
+        return jLabel2;
+    }
+
+    public void setjLabel2(JLabel jLabel2) {
+        this.jLabel2 = jLabel2;
+    }
+
+    public JLabel getjLabel20() {
+        return jLabel20;
+    }
+
+    public void setjLabel20(JLabel jLabel20) {
+        this.jLabel20 = jLabel20;
+    }
+
+    public JLabel getjLabel21() {
+        return jLabel21;
+    }
+
+    public void setjLabel21(JLabel jLabel21) {
+        this.jLabel21 = jLabel21;
+    }
+
+    public JLabel getjLabel22() {
+        return jLabel22;
+    }
+
+    public void setjLabel22(JLabel jLabel22) {
+        this.jLabel22 = jLabel22;
+    }
+
+    public JLabel getjLabel23() {
+        return jLabel23;
+    }
+
+    public void setjLabel23(JLabel jLabel23) {
+        this.jLabel23 = jLabel23;
+    }
+
+    public JLabel getjLabel24() {
+        return jLabel24;
+    }
+
+    public void setjLabel24(JLabel jLabel24) {
+        this.jLabel24 = jLabel24;
+    }
+
+    public JLabel getjLabel25() {
+        return jLabel25;
+    }
+
+    public void setjLabel25(JLabel jLabel25) {
+        this.jLabel25 = jLabel25;
+    }
+
+    public JLabel getjLabel26() {
+        return jLabel26;
+    }
+
+    public void setjLabel26(JLabel jLabel26) {
+        this.jLabel26 = jLabel26;
+    }
+
+    public JLabel getjLabel27() {
+        return jLabel27;
+    }
+
+    public void setjLabel27(JLabel jLabel27) {
+        this.jLabel27 = jLabel27;
+    }
+
+    public JLabel getjLabel28() {
+        return jLabel28;
+    }
+
+    public void setjLabel28(JLabel jLabel28) {
+        this.jLabel28 = jLabel28;
+    }
+
+    public JLabel getjLabel29() {
+        return jLabel29;
+    }
+
+    public void setjLabel29(JLabel jLabel29) {
+        this.jLabel29 = jLabel29;
+    }
+
+    public JLabel getjLabel3() {
+        return jLabel3;
+    }
+
+    public void setjLabel3(JLabel jLabel3) {
+        this.jLabel3 = jLabel3;
+    }
+
+    public JLabel getjLabel30() {
+        return jLabel30;
+    }
+
+    public void setjLabel30(JLabel jLabel30) {
+        this.jLabel30 = jLabel30;
+    }
+
+    public JLabel getjLabel31() {
+        return jLabel31;
+    }
+
+    public void setjLabel31(JLabel jLabel31) {
+        this.jLabel31 = jLabel31;
+    }
+
+    public JLabel getjLabel32() {
+        return jLabel32;
+    }
+
+    public void setjLabel32(JLabel jLabel32) {
+        this.jLabel32 = jLabel32;
+    }
+
+    public JLabel getjLabel33() {
+        return jLabel33;
+    }
+
+    public void setjLabel33(JLabel jLabel33) {
+        this.jLabel33 = jLabel33;
+    }
+
+    public JLabel getjLabel34() {
+        return jLabel34;
+    }
+
+    public void setjLabel34(JLabel jLabel34) {
+        this.jLabel34 = jLabel34;
+    }
+
+    public JLabel getjLabel35() {
+        return jLabel35;
+    }
+
+    public void setjLabel35(JLabel jLabel35) {
+        this.jLabel35 = jLabel35;
+    }
+
+    public JLabel getjLabel36() {
+        return jLabel36;
+    }
+
+    public void setjLabel36(JLabel jLabel36) {
+        this.jLabel36 = jLabel36;
+    }
+
+    public JLabel getjLabel37() {
+        return jLabel37;
+    }
+
+    public void setjLabel37(JLabel jLabel37) {
+        this.jLabel37 = jLabel37;
+    }
+
+    public JLabel getjLabel38() {
+        return jLabel38;
+    }
+
+    public void setjLabel38(JLabel jLabel38) {
+        this.jLabel38 = jLabel38;
+    }
+
+    public JLabel getjLabel39() {
+        return jLabel39;
+    }
+
+    public void setjLabel39(JLabel jLabel39) {
+        this.jLabel39 = jLabel39;
+    }
+
+    public JLabel getjLabel4() {
+        return jLabel4;
+    }
+
+    public void setjLabel4(JLabel jLabel4) {
+        this.jLabel4 = jLabel4;
+    }
+
+    public JLabel getjLabel40() {
+        return jLabel40;
+    }
+
+    public void setjLabel40(JLabel jLabel40) {
+        this.jLabel40 = jLabel40;
+    }
+
+    public JLabel getjLabel5() {
+        return jLabel5;
+    }
+
+    public void setjLabel5(JLabel jLabel5) {
+        this.jLabel5 = jLabel5;
+    }
+
+    public JLabel getjLabel6() {
+        return jLabel6;
+    }
+
+    public void setjLabel6(JLabel jLabel6) {
+        this.jLabel6 = jLabel6;
+    }
+
+    public JLabel getjLabel7() {
+        return jLabel7;
+    }
+
+    public void setjLabel7(JLabel jLabel7) {
+        this.jLabel7 = jLabel7;
+    }
+
+    public JLabel getjLabel8() {
+        return jLabel8;
+    }
+
+    public void setjLabel8(JLabel jLabel8) {
+        this.jLabel8 = jLabel8;
+    }
+
+    public JLabel getjLabel9() {
+        return jLabel9;
+    }
+
+    public void setjLabel9(JLabel jLabel9) {
+        this.jLabel9 = jLabel9;
+    }
+
+    public JPanel getjPanel1() {
+        return jPanel1;
+    }
+
+    public void setjPanel1(JPanel jPanel1) {
+        this.jPanel1 = jPanel1;
+    }
+
+    public JPanel getjPanel2() {
+        return jPanel2;
+    }
+
+    public void setjPanel2(JPanel jPanel2) {
+        this.jPanel2 = jPanel2;
+    }
+
+    public JPanel getjPanel3() {
+        return jPanel3;
+    }
+
+    public void setjPanel3(JPanel jPanel3) {
+        this.jPanel3 = jPanel3;
+    }
+
+    public JPanel getjPanel4() {
+        return jPanel4;
+    }
+
+    public void setjPanel4(JPanel jPanel4) {
+        this.jPanel4 = jPanel4;
+    }
+
+    public JPanel getjPanel5() {
+        return jPanel5;
+    }
+
+    public void setjPanel5(JPanel jPanel5) {
+        this.jPanel5 = jPanel5;
+    }
+
+    public JScrollPane getjScrollPane1() {
+        return jScrollPane1;
+    }
+
+    public void setjScrollPane1(JScrollPane jScrollPane1) {
+        this.jScrollPane1 = jScrollPane1;
+    }
+
+    public JScrollPane getjScrollPane2() {
+        return jScrollPane2;
+    }
+
+    public void setjScrollPane2(JScrollPane jScrollPane2) {
+        this.jScrollPane2 = jScrollPane2;
+    }
+
+    public JTextField getNumeroVacunas() {
+        return numeroVacunas;
+    }
+
+    public void setNumeroVacunas(JTextField numeroVacunas) {
+        this.numeroVacunas = numeroVacunas;
+    }
+
+    public JTextField getPacienteRecepcion() {
+        return pacienteRecepcion;
+    }
+
+    public void setPacienteRecepcion(JTextField pacienteRecepcion) {
+        this.pacienteRecepcion = pacienteRecepcion;
+    }
+
+    public JTextField getPuesto1() {
+        return puesto1;
+    }
+
+    public void setPuesto1(JTextField puesto1) {
+        this.puesto1 = puesto1;
+    }
+
+    public JTextField getPuesto10() {
+        return puesto10;
+    }
+
+    public void setPuesto10(JTextField puesto10) {
+        this.puesto10 = puesto10;
+    }
+
+    public JTextField getPuesto2() {
+        return puesto2;
+    }
+
+    public void setPuesto2(JTextField puesto2) {
+        this.puesto2 = puesto2;
+    }
+
+    public JTextField getPuesto3() {
+        return puesto3;
+    }
+
+    public void setPuesto3(JTextField puesto3) {
+        this.puesto3 = puesto3;
+    }
+
+    public JTextField getPuesto4() {
+        return puesto4;
+    }
+
+    public void setPuesto4(JTextField puesto4) {
+        this.puesto4 = puesto4;
+    }
+
+    public JTextField getPuesto5() {
+        return puesto5;
+    }
+
+    public void setPuesto5(JTextField puesto5) {
+        this.puesto5 = puesto5;
+    }
+
+    public JTextField getPuesto6() {
+        return puesto6;
+    }
+
+    public void setPuesto6(JTextField puesto6) {
+        this.puesto6 = puesto6;
+    }
+
+    public JTextField getPuesto7() {
+        return puesto7;
+    }
+
+    public void setPuesto7(JTextField puesto7) {
+        this.puesto7 = puesto7;
+    }
+
+    public JTextField getPuesto8() {
+        return puesto8;
+    }
+
+    public void setPuesto8(JTextField puesto8) {
+        this.puesto8 = puesto8;
+    }
+
+    public JTextField getPuesto9() {
+        return puesto9;
+    }
+
+    public void setPuesto9(JTextField puesto9) {
+        this.puesto9 = puesto9;
+    }
+
+    public JTextField getPuestoO1() {
+        return puestoO1;
+    }
+
+    public void setPuestoO1(JTextField puestoO1) {
+        this.puestoO1 = puestoO1;
+    }
+
+    public JTextField getPuestoO10() {
+        return puestoO10;
+    }
+
+    public void setPuestoO10(JTextField puestoO10) {
+        this.puestoO10 = puestoO10;
+    }
+
+    public JTextField getPuestoO11() {
+        return puestoO11;
+    }
+
+    public void setPuestoO11(JTextField puestoO11) {
+        this.puestoO11 = puestoO11;
+    }
+
+    public JTextField getPuestoO12() {
+        return puestoO12;
+    }
+
+    public void setPuestoO12(JTextField puestoO12) {
+        this.puestoO12 = puestoO12;
+    }
+
+    public JTextField getPuestoO13() {
+        return puestoO13;
+    }
+
+    public void setPuestoO13(JTextField puestoO13) {
+        this.puestoO13 = puestoO13;
+    }
+
+    public JTextField getPuestoO14() {
+        return puestoO14;
+    }
+
+    public void setPuestoO14(JTextField puestoO14) {
+        this.puestoO14 = puestoO14;
+    }
+
+    public JTextField getPuestoO15() {
+        return puestoO15;
+    }
+
+    public void setPuestoO15(JTextField puestoO15) {
+        this.puestoO15 = puestoO15;
+    }
+
+    public JTextField getPuestoO16() {
+        return puestoO16;
+    }
+
+    public void setPuestoO16(JTextField puestoO16) {
+        this.puestoO16 = puestoO16;
+    }
+
+    public JTextField getPuestoO17() {
+        return puestoO17;
+    }
+
+    public void setPuestoO17(JTextField puestoO17) {
+        this.puestoO17 = puestoO17;
+    }
+
+    public JTextField getPuestoO18() {
+        return puestoO18;
+    }
+
+    public void setPuestoO18(JTextField puestoO18) {
+        this.puestoO18 = puestoO18;
+    }
+
+    public JTextField getPuestoO19() {
+        return puestoO19;
+    }
+
+    public void setPuestoO19(JTextField puestoO19) {
+        this.puestoO19 = puestoO19;
+    }
+
+    public JTextField getPuestoO2() {
+        return puestoO2;
+    }
+
+    public void setPuestoO2(JTextField puestoO2) {
+        this.puestoO2 = puestoO2;
+    }
+
+    public JTextField getPuestoO20() {
+        return puestoO20;
+    }
+
+    public void setPuestoO20(JTextField puestoO20) {
+        this.puestoO20 = puestoO20;
+    }
+
+    public JTextField getPuestoO3() {
+        return puestoO3;
+    }
+
+    public void setPuestoO3(JTextField puestoO3) {
+        this.puestoO3 = puestoO3;
+    }
+
+    public JTextField getPuestoO4() {
+        return puestoO4;
+    }
+
+    public void setPuestoO4(JTextField puestoO4) {
+        this.puestoO4 = puestoO4;
+    }
+
+    public JTextField getPuestoO5() {
+        return puestoO5;
+    }
+
+    public void setPuestoO5(JTextField puestoO5) {
+        this.puestoO5 = puestoO5;
+    }
+
+    public JTextField getPuestoO6() {
+        return puestoO6;
+    }
+
+    public void setPuestoO6(JTextField puestoO6) {
+        this.puestoO6 = puestoO6;
+    }
+
+    public JTextField getPuestoO7() {
+        return puestoO7;
+    }
+
+    public void setPuestoO7(JTextField puestoO7) {
+        this.puestoO7 = puestoO7;
+    }
+
+    public JTextField getPuestoO8() {
+        return puestoO8;
+    }
+
+    public void setPuestoO8(JTextField puestoO8) {
+        this.puestoO8 = puestoO8;
+    }
+
+    public JTextField getPuestoO9() {
+        return puestoO9;
+    }
+
+    public void setPuestoO9(JTextField puestoO9) {
+        this.puestoO9 = puestoO9;
+    }
+
+    public JTextField getSalidaTextField() {
+        return salidaTextField;
+    }
+
+    public void setSalidaTextField(JTextField salidaTextField) {
+        this.salidaTextField = salidaTextField;
+    }
+
+    public JRootPane getRootPane() {
+        return rootPane;
+    }
+
+    public void setRootPane(JRootPane rootPane) {
+        this.rootPane = rootPane;
+    }
+
+    public boolean isRootPaneCheckingEnabled() {
+        return rootPaneCheckingEnabled;
+    }
+
+    public void setRootPaneCheckingEnabled(boolean rootPaneCheckingEnabled) {
+        this.rootPaneCheckingEnabled = rootPaneCheckingEnabled;
+    }
+
+    public AccessibleContext getAccessibleContext() {
+        return accessibleContext;
+    }
+
+    public void setAccessibleContext(AccessibleContext accessibleContext) {
+        this.accessibleContext = accessibleContext;
+    }
 
     /**
      * @param args the command line arguments

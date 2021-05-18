@@ -1,8 +1,7 @@
 package Principal;
 
 import java.io.IOException;
-import java.text.*;
-import java.util.Date;
+
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -14,6 +13,9 @@ import java.util.logging.Logger;
  */
 public class Paciente extends Thread {
 
+    /**
+     * 
+     */
     private String id;
     private Recepcion recepcion; //Reciben la recepcion directamente del main para que sea la misma todo el rato
     private int numero;
@@ -24,9 +26,16 @@ public class Paciente extends Thread {
     private Semaphore semRegistrar; //Objeto compartido con el auxiliar 1 para que espere mientra se hace el registro de la vacuna
     private Semaphore pacienteVacunado;
     private Semaphore semObservar;
-    
-    
 
+    /**
+     *  Para hacer el javadoc tienes que poner /** y das a enter, esto tiene que ser en cada atributo y método
+     *  y en cada caso tienes que poner para que funciona, por ejemplo
+     * @param numero Número del apciente que se le asigna al identificador
+     * @param recepcion
+     * @param salaVacunacion
+     * @param salaObservacion
+     * @param semRegistrar 
+     */
     public Paciente(int numero, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, Semaphore semRegistrar) {
         this.numero = numero;
         id = "P" + String.format("%04d", numero);
@@ -68,6 +77,10 @@ public class Paciente extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(Paciente.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void setSemObservar(Semaphore semObservar) {
+        this.semObservar = semObservar;
     }
 
     public Semaphore getPacienteVacunado() {

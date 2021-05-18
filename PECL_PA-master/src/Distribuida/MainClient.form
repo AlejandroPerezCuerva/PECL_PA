@@ -347,11 +347,7 @@
                               <Component id="auxiliarVacunacion" min="-2" pref="50" max="-2" attributes="0"/>
                               <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                               <Component id="numeroVacunas" min="-2" pref="50" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="162" max="32767" attributes="0"/>
-                                  <Component id="botonRefrescar" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="jLabel18" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -359,7 +355,7 @@
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
+                  <EmptySpace pref="373" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -390,10 +386,7 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="botonRefrescar" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="numeroVacunas" min="-2" pref="30" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -663,14 +656,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonCerrar10ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="botonRefrescar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Refrescar"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="botonRefrescarActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

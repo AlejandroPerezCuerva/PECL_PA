@@ -1,6 +1,5 @@
 package Principal;
 
-
 import static java.lang.Thread.sleep;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +24,7 @@ public class CrearPacientes extends Thread {
     private SalaObservacion salaObservacion;
     private Semaphore semRegistrar;
 
-    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion,Semaphore semRegistrar) {
+    public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, Semaphore semRegistrar) {
         this.recepcion = recepcion;
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
@@ -44,6 +43,46 @@ public class CrearPacientes extends Thread {
             pool.execute(pacienteNuevo);
         }
         pool.shutdown();
+    }
+
+    public Recepcion getRecepcion() {
+        return recepcion;
+    }
+
+    public void setRecepcion(Recepcion recepcion) {
+        this.recepcion = recepcion;
+    }
+
+    public ExecutorService getPool() {
+        return pool;
+    }
+
+    public void setPool(ExecutorService pool) {
+        this.pool = pool;
+    }
+
+    public SalaVacunacion getSalaVacunacion() {
+        return salaVacunacion;
+    }
+
+    public void setSalaVacunacion(SalaVacunacion salaVacunacion) {
+        this.salaVacunacion = salaVacunacion;
+    }
+
+    public SalaObservacion getSalaObservacion() {
+        return salaObservacion;
+    }
+
+    public void setSalaObservacion(SalaObservacion salaObservacion) {
+        this.salaObservacion = salaObservacion;
+    }
+
+    public Semaphore getSemRegistrar() {
+        return semRegistrar;
+    }
+
+    public void setSemRegistrar(Semaphore semRegistrar) {
+        this.semRegistrar = semRegistrar;
     }
 
 }

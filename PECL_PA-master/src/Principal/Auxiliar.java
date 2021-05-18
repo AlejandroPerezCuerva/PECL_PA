@@ -106,6 +106,7 @@ public class Auxiliar extends Thread {
     public void setSemRegistrar(Semaphore semRegistrar) {
         this.semRegistrar = semRegistrar;
     }
+    
 
     @Override
     public String toString() {

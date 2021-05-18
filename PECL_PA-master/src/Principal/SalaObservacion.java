@@ -143,12 +143,6 @@ public class SalaObservacion {
         return mensaje;
     }
 
-    public void recibirMensaje(ArrayList<String> mensaje) {//Se imprime por pantalla el contenido de los 20 puestos del servidor
-        for (int i = 0; i < mensaje.size(); i++) {
-            puestosObservacion.get(i).setText(mensaje.get(i));
-        }
-    }
-
     public BufferedWriter getFichero() {
         return fichero;
     }

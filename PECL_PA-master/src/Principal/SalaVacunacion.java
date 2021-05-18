@@ -117,16 +117,16 @@ public class SalaVacunacion {
             }
 
             //Si el sanitario está en el puesto que el cliente quiere cerrar, se tiene que ir a descansar
-            if (sanitario.getPuesto() == puestoCerrado.get()) {
+            if (puestos.get(sanitario.getPuesto()).isLimpiando()) {
                 sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).set(15);
                 sanitario.getSanitarioDescansaDistribuida().set(true);
-                puestoCerrado.set(-1); //Se reinicia el puesto cerrado
+                puestos.get(sanitario.getPuesto()).setLimpiando(false);//Se abre de nuevo el puesto
 
             }
         }
         puestos.get(sanitario.getPuesto()).getJtfPuesto().setText(""); //Cuando se va a descansar se pone el JTextField limpio
         puestos.get(sanitario.getPuesto()).setDisponible(true); //Cuando terminan de vacunar avisan de que su puesto está disponible
-        
+
         //Si el sanitario abandona porque se va a limpiar la sala se pone en el JTextField
         if (sanitario.getSanitarioDescansaDistribuida().get()) {
             puestos.get(sanitario.getPuesto()).getJtfPuesto().setText("Limpiando");
@@ -143,17 +143,26 @@ public class SalaVacunacion {
         return mensaje;
     }
 
-    //Se imprime por pantalla el contenido de los 20 puestos del servidor
-    public void recibirMensaje(ArrayList<String> mensaje) {
-        for (int i = 0; i < puestosVacunacion.size(); i++) {
-            puestosVacunacion.get(i).setText(mensaje.get(i));
-        }
-        auxiliarVacunacion.setText(mensaje.get(puestosVacunacion.size() + 1));//El auxiliar se guarda en la posicion siguiente a los puestos
-        numeroVacunas.setText(mensaje.get(puestosVacunacion.size() + 2));//El numero de vacunas se guarda en la posicion siguiente al auxiliar
+    //Método para cerrar puesto
+    public void cerrarPuesto(int puesto) {
+        puestos.get(puesto).setLimpiando(true);
+        puestoCerrado.set(puesto);
     }
 
-    public void cerrarPuesto(int puesto) {
-        puestoCerrado.set(puesto);
+    public Semaphore getSinVacunas() {
+        return sinVacunas;
+    }
+
+    public void setSinVacunas(Semaphore sinVacunas) {
+        this.sinVacunas = sinVacunas;
+    }
+
+    public AtomicInteger getPuestoCerrado() {
+        return puestoCerrado;
+    }
+
+    public void setPuestoCerrado(AtomicInteger puestoCerrado) {
+        this.puestoCerrado = puestoCerrado;
     }
 
     public void setPuestos(ArrayList<Puesto> puestos) {

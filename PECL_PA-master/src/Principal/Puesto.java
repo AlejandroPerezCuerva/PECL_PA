@@ -6,7 +6,7 @@ public class Puesto {
 
     private JTextField jtfPuesto;
     private boolean disponible, disponiblePaciente;
-    private boolean limpiando=false;
+    private boolean limpiando = false;
     private Sanitario sanitario;//Sanitario asociado a los puestos de vacunación para poder indicar cuando se limpian dichos puestos
 
     public Puesto(JTextField jtfPuesto, boolean disponible, boolean disponiblePaciente) {
@@ -54,6 +54,5 @@ public class Puesto {
     public void setSanitario(Sanitario sanitario) {
         this.sanitario = sanitario;
     }
-    
-    
+
 }
