@@ -66,19 +66,19 @@ public class Recepcion {
                 //Si la cola de espera del registro está vacía, se espera
                 semEsperaPaciente.acquire();
 
+            } else if (salaVacunacion.getColaVacunar().size() > 9 || (salaObservacion.getCapacidadObservacion().size() + salaObservacion.getPacientesObservacion().size()) > 19) {
+                semSalasOcupadas.acquire();
             } else {
+                /*  System.out.println(semSalasOcupadas.availablePermits() + " Permisos del auxiliar");
+                System.out.println("Cola sala vacunación " + salaVacunacion.getColaVacunar().size());
+                System.out.println("Cola sala Observación " +( salaObservacion.getCapacidadObservacion().size() + salaObservacion.getPacientesObservacion().size()));
+                 */
                 Paciente paciente = (Paciente) colaEspera.take(); //Con esto lo saca de la cola y lo borra
                 pacienteRecepcion.setText(paciente.toString());
                 colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
                 auxiliar1.currentThread().sleep((int) (500 * Math.random() + 500)); //Tarda entre 0,5 y 1s en registrarse
                 Date objDate = new Date();//Fecha para el txt
                 if ((int) (Math.random() * 100) <= 99) {//Un 1% de los pacientes no tinenen cita previa
-
-                    //Mientras las salas estén ocupadas se espera hasta que estén libres
-                    while (salaVacunacion.getColaVacunar().size() >= 10 && salaObservacion.getCapacidadObservacion().size() >= 20) {
-                        //Si están llenas las salas se espera
-                        semSalasOcupadas.acquire();
-                    }
 
                     //Elige el puesto de forma aleatoria y el sanitario que le va a tocar vacunarse
                     boolean puestoObtenido = false;

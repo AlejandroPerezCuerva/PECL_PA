@@ -53,16 +53,14 @@ public class SalaDescanso {
         fichero.flush();
     }
 
-    public void descansoAuxiliares(Auxiliar auxiliar, int maximo, int minimo) {
+    public void descansoAuxiliares(Auxiliar auxiliar, int maximo, int minimo) throws IOException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl auxiliar " + auxiliar + " comienza su descanso\n";
         System.out.print(mensaje);
-        try {
-            fichero.write(mensaje);
-            fichero.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(SalaDescanso.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        fichero.write(mensaje);
+        fichero.flush();
+
         try {
             colaSala.put(auxiliar); //Metemos el auxiliar en la cola
             colaSalaDescanso.setText(colaSala.toString());
@@ -75,17 +73,15 @@ public class SalaDescanso {
         objDate = new Date();
         mensaje = diaHora.format(objDate) + "\t\tEl auxiliar " + auxiliar + " termina su descanso\n";
         System.out.print(mensaje);
-        try {
-            fichero.write(mensaje);
-        } catch (IOException ex) {
-            Logger.getLogger(SalaDescanso.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        fichero.write(mensaje);
+        fichero.flush();
     }
 
     public void descansoSanitarios(Sanitario sanitario, int maximo, int minimo) throws IOException, InterruptedException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl sanitario " + sanitario + " empieza su descanso\n";
-        System.out.println(mensaje);
+        System.out.print(mensaje);
 
         fichero.write(mensaje);
         fichero.flush();
@@ -99,7 +95,7 @@ public class SalaDescanso {
 
         objDate = new Date();
         mensaje = diaHora.format(objDate) + "\t\tEl sanitario " + sanitario + " termina su descanso\n";
-        System.out.println(mensaje);
+        System.out.print(mensaje);
         fichero.write(mensaje);
         fichero.flush();
     }

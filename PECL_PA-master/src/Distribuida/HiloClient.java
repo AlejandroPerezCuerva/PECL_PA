@@ -56,6 +56,12 @@ public class HiloClient extends Thread {
 
                 sleep(1000);
             }
+            for (int i = 0; i < arrayEntradas.size(); i++) {
+                arrayEntradas.get(i).close();
+            }
+            salida.close();
+            mensaje.close();
+            cliente.close();
         } catch (IOException ex) {
             Logger.getLogger(HiloClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

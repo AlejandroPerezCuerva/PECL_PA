@@ -8,7 +8,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,7 @@ import java.util.logging.Logger;
 public class HiloConexion extends Thread {
 
     private Socket conexion;
-    private DataInputStream entradaBooleano, entradaBoton, entradaInformar, booleanoCerrar;
+    private DataInputStream entradaBooleano, entradaBoton, entradaInformar;
     private boolean boleanoBotones = false, clienteInformar = false;
     private int puestoBoton = 0;
     private Recepcion recepcion;
@@ -29,7 +28,6 @@ public class HiloConexion extends Thread {
     private SalaDescanso salaDescanso;
     private ArrayList<String> arrayRecepcion, arrayVacunacion, arrayObservacion;
     private String stringDescanso = "", stringSalidaHospital = ""; //Como solo hay un JTextArea no hace falta array, con un string es suficiente
-    private boolean cerrar = false;//Bool para cerrar el hilo cuando se cierre la aplicación
 
     private ArrayList<DataOutputStream> arraySalidas;
 
@@ -43,7 +41,6 @@ public class HiloConexion extends Thread {
             entradaBooleano = new DataInputStream(conexion.getInputStream());
             entradaInformar = new DataInputStream(conexion.getInputStream());
             entradaBoton = new DataInputStream(conexion.getInputStream());
-            booleanoCerrar = new DataInputStream(conexion.getInputStream());
             arraySalidas = new ArrayList<>();
             //Creamos todos los outputs que vamos a necesitar
             for (int i = 0; i < 37; i++) {
@@ -110,7 +107,6 @@ public class HiloConexion extends Thread {
             entradaBooleano.close();
             entradaBoton.close();
             entradaInformar.close();
-            booleanoCerrar.close();
             conexion.close();
         } catch (IOException ex) {
             Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
@@ -148,14 +144,6 @@ public class HiloConexion extends Thread {
 
     public void setEntradaInformar(DataInputStream entradaInformar) {
         this.entradaInformar = entradaInformar;
-    }
-
-    public DataInputStream getBooleanoCerrar() {
-        return booleanoCerrar;
-    }
-
-    public void setBooleanoCerrar(DataInputStream booleanoCerrar) {
-        this.booleanoCerrar = booleanoCerrar;
     }
 
     public boolean isBoleanoBotones() {
@@ -254,14 +242,6 @@ public class HiloConexion extends Thread {
         this.stringSalidaHospital = stringSalidaHospital;
     }
 
-    public boolean isCerrar() {
-        return cerrar;
-    }
-
-    public void setCerrar(boolean cerrar) {
-        this.cerrar = cerrar;
-    }
-
     public ArrayList<DataOutputStream> getArraySalidas() {
         return arraySalidas;
     }
@@ -269,7 +249,5 @@ public class HiloConexion extends Thread {
     public void setArraySalidas(ArrayList<DataOutputStream> arraySalidas) {
         this.arraySalidas = arraySalidas;
     }
-    
-    
 
 }

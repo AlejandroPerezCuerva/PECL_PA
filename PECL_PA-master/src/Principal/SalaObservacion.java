@@ -87,11 +87,7 @@ public class SalaObservacion {
             puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
             capacidadObservacion.take();
             puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
-
-            //IGUAL QUE EN VACUNACIÓN, HAY QUE BUSCAR UN METODO MEJOR PARA AVISAR AL AUXILIAR 1
-            paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
         }
-
     }
 
     public void atenderPaciente(Sanitario sanitario) throws InterruptedException, IOException {
@@ -121,8 +117,6 @@ public class SalaObservacion {
         puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
         puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
 
-        //Posible para quitar
-        paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de observación
     }
 
     //El paciente sale del hospital

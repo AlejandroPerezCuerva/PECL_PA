@@ -108,9 +108,6 @@ public class SalaVacunacion {
 
                 paciente.getPacienteVacunado().release(); //Se supone que cuando termina el sleep se le avisa al paciente para que entre en la sala de observación
 
-                //ESTO NO HACE NADA, HAY QUE CAMBIAR LA FORMA DE AVISAR AL AUXILIAR 1 DE QUE HAY HUECO
-                paciente.getRecepcion().getSemSalasOcupadas().release(); //Se avisa de que hay hueco en la sala de vacunación
-
                 sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).incrementAndGet(); //Cuando vacuna a un paciente se le suma uno al contador individual del sanitario
             } else {
                 colaVacunar.add(paciente);
