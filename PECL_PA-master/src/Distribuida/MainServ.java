@@ -18,17 +18,11 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.accessibility.AccessibleContext;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class MainServ extends javax.swing.JFrame {
 
@@ -122,6 +116,7 @@ public class MainServ extends javax.swing.JFrame {
         a1.start();
         a2.start();
 
+        //Se crea el hilo que hace de servidor y se le pasan los parámetros necesarios para luego hacer start
         hiloServidor = new HiloServidor(recepcion, salaVacunacion, salaObservacion, salaDescanso);
         hiloServidor.start();
     }
@@ -879,7 +874,6 @@ public class MainServ extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(MainServ.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_formWindowClosing
 
     /**

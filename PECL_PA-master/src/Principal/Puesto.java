@@ -2,6 +2,11 @@ package Principal;
 
 import javax.swing.JTextField;
 
+/**
+ * 
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
+ */
+
 public class Puesto {
 
     private JTextField jtfPuesto;

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class HiloConexion extends Thread {
 
@@ -28,7 +28,6 @@ public class HiloConexion extends Thread {
     private SalaDescanso salaDescanso;
     private ArrayList<String> arrayRecepcion, arrayVacunacion, arrayObservacion;
     private String stringDescanso = "", stringSalidaHospital = ""; //Como solo hay un JTextArea no hace falta array, con un string es suficiente
-
     private ArrayList<DataOutputStream> arraySalidas;
 
     public HiloConexion(Socket conexion, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, SalaDescanso salaDescanso) {

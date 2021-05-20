@@ -14,7 +14,7 @@ import javax.swing.JTextArea;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class SalaDescanso {
 

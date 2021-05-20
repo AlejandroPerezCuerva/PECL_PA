@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class Recepcion {
 

@@ -7,18 +7,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.accessibility.AccessibleContext;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class MainClient extends javax.swing.JFrame {
 
@@ -1092,13 +1085,12 @@ public class MainClient extends javax.swing.JFrame {
             mensaje = new DataOutputStream(cliente.getOutputStream());
             salida.writeBoolean(true);
             mensaje.writeInt(10);
-            
+
         } catch (IOException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_botonCerrar10ActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */

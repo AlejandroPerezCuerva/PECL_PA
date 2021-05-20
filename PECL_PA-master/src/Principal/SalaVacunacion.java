@@ -10,22 +10,34 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class SalaVacunacion {
 
     private int aforoVacunacion, puestoPaciente = 0; //Número máximo de pacientes en la sala de vacunación
-    private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
-    private ArrayList<JTextField> puestosVacunacion;
-    private JTextField auxiliarVacunacion, numeroVacunas;
-    private AtomicInteger contadorVacunas;
-    private BlockingQueue colaVacunar;
-    private Semaphore sinVacunas;
-    private AtomicInteger puestoCerrado;
+    private ArrayList<Puesto> puestos; //ArrayList de puestos de la sala de vacunación
+    private ArrayList<JTextField> puestosVacunacion; //ArrayList de todos los JTextField de los puestos de vacuanción
+    private JTextField auxiliarVacunacion, numeroVacunas; //JTextField para el auxiliar y el número de vacunas
+    private AtomicInteger contadorVacunas; //Contador de las vacunas
+    private BlockingQueue colaVacunar; //Cola donde se meten los pacientes para vacunarse
+    private Semaphore sinVacunas; //Semáforo que avisa si no hay vacunas
+    private AtomicInteger puestoCerrado; //Puesto que se está limpiando
 
+    /**
+     * Constructor de la clase sala de vacunación. También se inicializan todos
+     * recursos de concurrencia aquí, para que quede más limpio
+     *
+     * @param aforoVacunacion Número máximo que tiene la sala como aforo
+     * @param auxiliarVacunacion JTextField donde se indica al auxiliar 2 que es
+     * quien hace las vacunas
+     * @param numeroVacunas JTextField donde se indican las vacunas disponibles
+     * @param puestosVacunacion Todos los JTextField donde están los sanitarios
+     * vacunando
+     */
     public SalaVacunacion(int aforoVacunacion, JTextField auxiliarVacunacion, JTextField numeroVacunas, ArrayList<JTextField> puestosVacunacion) {
         this.aforoVacunacion = aforoVacunacion;
         this.puestosVacunacion = puestosVacunacion;
+        this.puestos = new ArrayList<Puesto>();
         for (int i = 0; i < puestosVacunacion.size(); i++) {
             Puesto nuevoPuesto = new Puesto(puestosVacunacion.get(i), true, true); //Creamos los puestos con los JTextField del main y con dos variables para controlar si están vacios o llenos
             puestos.add(nuevoPuesto);
@@ -38,7 +50,16 @@ public class SalaVacunacion {
         this.puestoCerrado = new AtomicInteger(-1); //Se inicializa a -1 para que no afecte a ningun sanitario
     }
 
-    //Método para el auxiliar 2, genera 20 dosis con el periodo indicado. Tiene un contador que llega hasta 20
+    /**
+     * En este método la misión del auxiliar 2 es ir incrementando el número de
+     * vacunas para que los sanitarios puedan utilizarlas, se utiliza
+     * contadorVacunas que es un AtomicInteger ya que es un método de
+     * concurrencia de comunicación y también un semáforo que indica que hay
+     * vacunas, por si hay algún sanitario esperando por ellas
+     *
+     * @param auxiliar2 Auxiliar encargado de introducir las dosis
+     * @throws InterruptedException Excepciones de interrupciones
+     */
     public void introducirDosis(Auxiliar auxiliar2) throws InterruptedException {
         //Primero ponemos el contador del auxiliar 2 a 0
         auxiliar2.getContadorAux2().set(0);
@@ -51,7 +72,14 @@ public class SalaVacunacion {
         auxiliarVacunacion.setText(""); //Actualizamos el JTextField cuando el auxiliar se va a descansar
     }
 
-    //Los sanitarios se colocan en el puesto que tengan libre
+    /**
+     * Método para que los sanitarios se coloquen en un puesto de vacunación,
+     * para hacer esto, se elige un puesto que esté libre y cuando se lo asignan
+     * lo pone a false para que esté ocupado y el siguiente sanitario no pueda
+     * meterse en el mismo puesto
+     *
+     * @param sanitario Sanitario que busca hueco en los puestos
+     */
     public void colocarSanitarios(Sanitario sanitario) {
         int i = 0;
         // Hacemos un bucle para que el sanitario elija puesto, una vez elegido el puesto se queda interrumpido para que salga del bucle while y solo ocupe un puesto
@@ -67,15 +95,36 @@ public class SalaVacunacion {
             i++;
         }
         sanitario.getSanitarioDescansaDistribuida().set(false); //Se pone a false para que el sanitario después de vacunar pueda atender al paciente que esta enfermo
-
     }
 
-    //procedimiento para meter al paciente en la salaVacunacion
+    /**
+     * Método que utilizan los pacientes para meterse en una cola que tiene el
+     * límite del aforo de la sala de vacunación y que luego gracias a la cola,
+     * los sanitarios pueden atender al paciente
+     *
+     * @param paciente Paciente que llega a la sala de vacunación
+     * @throws InterruptedException Excepciones de interrupciones
+     */
     public void entraPaciente(Paciente paciente) throws InterruptedException {
         //Se introduce al paciente en una cola con limitación del aforo de la sala de vacunación y es bloqueante para máximo como para vacío
         colaVacunar.put(paciente); //Se mete al paciente en la cola
     }
 
+    /**
+     * Este método es muy importante ya que tiene muchas funciones, el sanitario
+     * primero tiene que ver si hay vacunas para poder vacunar, después saca al
+     * paciente de la cola para comprobar si corresponde el número que tiene el
+     * paciente que se lo ha asignado el Auxiliar 1 con el número del puesto
+     * donde está el sanitario vacunando. Si no es así lo vuelve a meter a la
+     * cola si es así, coge una vacuna, se la pone al paciente en el tiempo
+     * especificado y hace un release del semáforo que tiene el paciente
+     * mientras espera que le vacunen para poder seguir su ejecución. Después
+     * mira si tienen que limpiar la salsa haciendo que el contador llegue a 15
+     * y se tenga que salir a descansar mientras limpian la sala
+     *
+     * @param sanitario Sanitario que vacuna a los paciente
+     * @throws InterruptedException Excepxiones de interrupciones
+     */
     public void vacunarPaciente(Sanitario sanitario) throws InterruptedException {
         //Se resetea el contador cada vez que un sanitario va a empezar a vacunar
         sanitario.getContadoresSanitarios().get(sanitario.getNumeroSanitario()).set(0); //Solucinado el problema de los contadores de los sanitarios porque cada sanitario tiene que tener un contador individual
@@ -130,6 +179,13 @@ public class SalaVacunacion {
         }
     }
 
+    /**
+     * Método que se utiliza para la segunda parte de la práctica. Este método
+     * mete en un ArrayList toda la información de la sala de vacunación para
+     * luego poder enviarsela al clietne
+     *
+     * @return ArrayList de toda la información de la sala de vacunación
+     */
     public ArrayList<String> crearMensajeVacunacion() {//Se crea un array con el contenido de la sala de vacunacion para enviarlo al cliente
         ArrayList mensaje = new ArrayList<String>();
         for (int i = 0; i < puestos.size(); i++) {
@@ -140,7 +196,12 @@ public class SalaVacunacion {
         return mensaje;
     }
 
-    //Método para cerrar puesto
+    /**
+     * Método de distribuida que se utiliza para saber que puesto se cierra para
+     * poder limpiarlo
+     *
+     * @param puesto Número del puesto que se cierra
+     */
     public void cerrarPuesto(int puesto) {
         puestos.get(puesto).setLimpiando(true);
         puestoCerrado.set(puesto);

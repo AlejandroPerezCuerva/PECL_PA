@@ -9,17 +9,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.accessibility.AccessibleContext;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class Main extends javax.swing.JFrame {
 

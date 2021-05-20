@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Alvaro Gonzalez Garcia
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class CrearPacientes extends Thread {
 

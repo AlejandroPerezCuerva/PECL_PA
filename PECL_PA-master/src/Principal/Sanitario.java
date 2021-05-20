@@ -9,19 +9,30 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class Sanitario extends Thread {
 
-    private String id;
+    private String id; //Identificador del sanitario
     private SalaDescanso salaDescanso; //Se le pasa como parámetro porque necesita acceder a ella
-    private SalaVacunacion salaVacunacion;
-    private SalaObservacion salaObservacion;
-    private ArrayList<AtomicInteger> contadoresSanitarios;
-    private int puesto, numeroSanitario;//****numeroSanitario sobra?*****/ Se utiliza en observación
+    private SalaVacunacion salaVacunacion; //Se le pasa como parámetro porque necesita acceder a ella
+    private SalaObservacion salaObservacion; //Se le pasa como parámetro porque necesita acceder a ella
+    private ArrayList<AtomicInteger> contadoresSanitarios; //Cada sanitario tiene un contador para llevar el control de los pacientes que atiende
+    private int puesto, numeroSanitario; //Puesto en el que están en la sala de observación y número de sanitario
     private AtomicBoolean sanitarioDescansaDistribuida; //Es un booleano para que el sanitario cuando esté descansado porque se lo ha dicho el cliente, 
     //vaya directamente a colocarse otra vez en el puesto y no vaya a atender a alguien que le ha dado reaccion
 
+    /**
+     * Constructor del sanitario
+     *
+     * @param num Número del identificador
+     * @param salaDescanso Clase donde descansan los sanitarios
+     * @param salaVacunacion Clase donde realizan la acción de vacunar
+     * @param salaObservacion Clase donde atienden a un paciente que tiene
+     * reacción
+     * @param contadoresSanitarios Contador que tiene cada sanitario para saber
+     * cuantos pacientes ha vacunado
+     */
     public Sanitario(int num, SalaDescanso salaDescanso, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, ArrayList<AtomicInteger> contadoresSanitarios) {
         id = "S" + String.format("%02d", num);
         this.salaDescanso = salaDescanso;
@@ -33,6 +44,17 @@ public class Sanitario extends Thread {
         this.sanitarioDescansaDistribuida = new AtomicBoolean(false);
     }
 
+    /**
+     * En el método run la función que tiene el sanitario lo primero es
+     * cambiarse, y luego tiene un bucle infinito donde su misión es colocarse
+     * en un puesto de vacunación, vacunar a 15 pacientes a menos que se limpie
+     * la sala de descanso. Después de vacunar, se van a descansar y después de
+     * descansar miran a ver si algún paciente tiene reacción a la vacuna para
+     * poder curarle y que se vaya bien a casa. En este último paso hay que
+     * tener en cuenta que si el sanitario sale de la sala de descanso porque lo
+     * ha dicho el cliente, tiene que volver a vacunar a 15 pacientes y no tiene
+     * que atender a los pacientes con reacción
+     */
     public void run() {
         try {
             //Lo primero que hacen es ir a la sala de descanso donde tardan en cambiarse entre 1 y 3 segundos

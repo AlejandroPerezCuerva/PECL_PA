@@ -13,13 +13,13 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class SalaObservacion {
 
     private int aforoObservacion, puestoLibre;
-    private ArrayList<Puesto> puestos = new ArrayList<Puesto>();
-    private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
+    private ArrayList<Puesto> puestos;
+    private ArrayList<JTextField> puestosObservacion;
     private JTextField salidaTextField;
     private BlockingQueue capacidadObservacion;
     private BlockingQueue pacientesObservacion;
@@ -30,6 +30,7 @@ public class SalaObservacion {
     public SalaObservacion(int aforoObservacion, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField, BlockingQueue pacientesObservacion, BufferedWriter fichero) {
         this.aforoObservacion = aforoObservacion;
         this.puestosObservacion = puestosObservacion;
+        this.puestos = new ArrayList<Puesto>();
         //Añadimos los puestos de observación a un array de la clase puestos para tener un mayor control sobre ellos
         for (int i = 0; i < aforoObservacion; i++) {
             Puesto nuevoPuesto = new Puesto(puestosObservacion.get(i), true, true);
@@ -116,7 +117,6 @@ public class SalaObservacion {
 
         puestos.get(paciente.getPuesto()).setDisponiblePaciente(true); //Ponemos que está libre el puesto del paciente porque ya ha terminado
         puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
-
     }
 
     //El paciente sale del hospital

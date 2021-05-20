@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author aleja
+ * @author Alvaro Gonzalez Garcia y Alejandro Pérez Cuerva
  */
 public class HiloServidor extends Thread {
 
