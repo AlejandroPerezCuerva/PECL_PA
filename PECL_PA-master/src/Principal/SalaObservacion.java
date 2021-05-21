@@ -17,16 +17,28 @@ import javax.swing.JTextField;
  */
 public class SalaObservacion {
 
-    private int aforoObservacion, puestoLibre;
-    private ArrayList<Puesto> puestos;
-    private ArrayList<JTextField> puestosObservacion;
-    private JTextField salidaTextField;
-    private BlockingQueue capacidadObservacion;
-    private BlockingQueue pacientesObservacion;
-    private BufferedWriter fichero;
-    private Date objDate;
-    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private int aforoObservacion, puestoLibre; //Aforo máximo de la sala de observación y número del puesto que está libre
+    private ArrayList<Puesto> puestos; //ArrayList de puestos donde están los JTextField y dos booleanos para indicar si hay sanitario y paciente
+    private ArrayList<JTextField> puestosObservacion; //ArrayList de los JTextField de los puestos de la sala de observación
+    private JTextField salidaTextField; //JTextField de la salida del hospital
+    private BlockingQueue capacidadObservacion; //Cola para saber cuantos pacientes hay en la sala de observación
+    private BlockingQueue pacientesObservacion; //Cola para saber los pacientes que tienen reacción a la vacuna
+    private BufferedWriter fichero; //Fichero donde se guardan los datos
+    private Date objDate; //Fecha para indicar cuando se realiza cada movimiento
+    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); //Formato de la fecha con la que aparece
 
+    /**
+     * Constructor de la Sala de observación, aquí se inicializan todos los
+     * atributos necesarios para el uso de la sala
+     *
+     * @param aforoObservacion Número del aforo de la sala
+     * @param puestosObservacion Todos los JTextField de la interfaz main que
+     * son los puestos
+     * @param salidaTextField JTextField de la salida
+     * @param pacientesObservacion Cola donde están los pacientes que tienen que
+     * ir a la sala de observación
+     * @param fichero Fichero donde se escriben los moviemientos
+     */
     public SalaObservacion(int aforoObservacion, ArrayList<JTextField> puestosObservacion, JTextField salidaTextField, BlockingQueue pacientesObservacion, BufferedWriter fichero) {
         this.aforoObservacion = aforoObservacion;
         this.puestosObservacion = puestosObservacion;
@@ -42,17 +54,15 @@ public class SalaObservacion {
         this.fichero = fichero;
     }
 
-    public boolean puestoLibre() {
-        boolean resultado = false;
-        for (int i = 0; i < puestos.size(); i++) {
-            resultado = resultado | puestos.get(i).isDisponible();//falso o dispoible ->true, falso o no disponible ->false
-            if (resultado) {
-                puestoLibre = i;
-            }
-        }
-        return resultado;
-    }
-
+    /**
+     * Método por donde entra el paciente que tiene que ir a la sala de
+     * observación. Los pacientes miran donde hay puesto libre y se meten
+     * indicandolo para que ningún otro paciente se meta en el mismo puesto que
+     * el y sale su identificador en el JTextField del puesto
+     *
+     * @param paciente Paciente que llega a la sala de observación
+     * @throws InterruptedException Excepciones de interrupción
+     */
     public void entraPaciente(Paciente paciente) throws InterruptedException {
         paciente.getSalaVacunacion().getPuestos().get(paciente.getPuesto()).setDisponiblePaciente(true); //Hasta que el paciente no entra en la sala de observación no deja libre su puesto en la sala de vacunación
         capacidadObservacion.put(paciente);//Entra el paciente a la cola que es bloqueante segun el aforo que haya
@@ -69,7 +79,16 @@ public class SalaObservacion {
         }
     }
 
-    //El paciente está en observación y un 5% se ponen malos y los sanitarios le cuidan
+    /**
+     * Método que hace el paciente que ya ha elegido su puesto esté durante 10
+     * segundos para ver si le da reacción la vacuna. A un 5% de los pacientes
+     * le da reacción y se tienen que meter en la cola de pacientes con reacción
+     * para que luego un sanitario les pueda curar.
+     *
+     * @param paciente Paciente que espera para ver si le da reacción la vacuna
+     * @throws InterruptedException Excepción de interrupción
+     * @throws IOException Excepción de entrada salida
+     */
     public void pacienteEnObservacion(Paciente paciente) throws InterruptedException, IOException {
         boolean reaccion = (int) (100 * Math.random()) <= 5; //En el 5% de los casos el paciente sufre efectos adversos
 
@@ -91,6 +110,16 @@ public class SalaObservacion {
         }
     }
 
+    /**
+     * Método en el cual el sanitario después de hacer su descanso se mete si ve
+     * que hay algún paciente con reacción a la vacuna. Si es así se mete en el
+     * método, saca al paciente enfermo de la cola, le atiende y luego le da el
+     * alta para que se pueda ir
+     *
+     * @param sanitario Sanitario que cura al paciente con reacción
+     * @throws InterruptedException Excepción de interrupción
+     * @throws IOException Excepción de entrada salida
+     */
     public void atenderPaciente(Sanitario sanitario) throws InterruptedException, IOException {
         //Cuando llega el sanitario, saca al paciente que va a atender de la cola        
         Paciente paciente = (Paciente) pacientesObservacion.take();
@@ -119,7 +148,14 @@ public class SalaObservacion {
         puestos.get(paciente.getPuesto()).getJtfPuesto().setText("");
     }
 
-    //El paciente sale del hospital
+    /**
+     * Método el cual utiliza el paciente cuando ha terminado su ejecución y
+     * quiere salir de hospital, lo único que hace este método es indicar el
+     * paciente que ha salido y lo muestra en la interfaz
+     *
+     * @param paciente Paciente que abandona el hospital
+     * @throws IOException Excepción de entrada salida
+     */
     public void salirHospital(Paciente paciente) throws IOException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl paciente " + paciente.toString() + " se va del Hospital\n";
@@ -129,6 +165,12 @@ public class SalaObservacion {
         salidaTextField.setText(paciente.toString());
     }
 
+    /**
+     * Método para la segunda parte de la práctica (Concurrencia distribuida) en el cual se recoge toda la información de todos los puestos de la sala de observación y de la 
+     * salida del hospital para poder enviarselo en un ArrayList al cliente
+     * 
+     * @return ArrayList con toda la información de la sala de observación
+     */
     public ArrayList<String> crearMensajeObservacion() {//Se crea un array con el contenido de los 20 puestos para enviarlo al cliente
         ArrayList<String> mensaje = new ArrayList<String>();
         for (int i = 0; i < puestos.size(); i++) {

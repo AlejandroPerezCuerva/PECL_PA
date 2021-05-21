@@ -13,28 +13,28 @@ import java.util.logging.Logger;
  */
 public class Paciente extends Thread {
 
-    /**
-     * 
-     */
-    private String id;
+    private String id; //Identificador que tiene el paciente
     private Recepcion recepcion; //Reciben la recepcion directamente del main para que sea la misma todo el rato
-    private int numero;
-    private AtomicBoolean registrado, reaccionVacuna;
-    private int puesto;
-    private SalaVacunacion salaVacunacion;
-    private SalaObservacion salaObservacion;
+    private int numero; //Número del identificador
+    private AtomicBoolean registrado, reaccionVacuna; //Booleanos para saber si han sido registrados con éxito y si les ha dado reacción la vacuna
+    private int puesto;  //Número donde se le indica el puesto al que tienen que ir
+    private SalaVacunacion salaVacunacion; //Sala donde se tienen que vacunar
+    private SalaObservacion salaObservacion; //Sala donde están una vez que se han vacunado
     private Semaphore semRegistrar; //Objeto compartido con el auxiliar 1 para que espere mientra se hace el registro de la vacuna
-    private Semaphore pacienteVacunado;
-    private Semaphore semObservar;
+    private Semaphore pacienteVacunado; //Semáforo para saber si el paciente ha sido vacunado y espere mientras le vacunen
+    private Semaphore semObservar; //Semáforo para saber si ha ido todo bien en la observación o ha tenido reacción a la vacuna
 
     /**
-     *  Para hacer el javadoc tienes que poner /** y das a enter, esto tiene que ser en cada atributo y método
-     *  y en cada caso tienes que poner para que funciona, por ejemplo
-     * @param numero Número del apciente que se le asigna al identificador
-     * @param recepcion
-     * @param salaVacunacion
-     * @param salaObservacion
-     * @param semRegistrar 
+     * Constructor de los paciente. También se inicializan los atributos
+     * necesarios para el correcto funcionamiento del programa
+     *
+     * @param numero Número del paciente que se le asigna al identificador
+     * @param recepcion Recepción donde se registra el paciente
+     * @param salaVacunacion Sala de vacunación donde se vacuna el paciente
+     * @param salaObservacion Sala de observación donde el paciente espera por
+     * si le da reacción la vacuna
+     * @param semRegistrar Semáforo que comparte con el auxiliar para que se
+     * registren de 1 en 1 y se indique si ha sido con éxito o no
      */
     public Paciente(int numero, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, Semaphore semRegistrar) {
         this.numero = numero;
@@ -50,6 +50,16 @@ public class Paciente extends Thread {
         this.semObservar = new Semaphore(0);
     }
 
+    /**
+     * Método run donde se indican los pasos que tiene que hacer el paciente
+     * durante su estancia en el hospital. Primero se va a la cola de la
+     * recepción para saber si está registrado o no, luego si ha sido registrado
+     * pasa a la sala de vacunación donde un sanitario le vacuna. Espera
+     * mientras le vacunan y después pasa a la sala de observación, aquí también
+     * tiene que esperar por si le da reacción la vacuna o ha ido todo bien.
+     * Después de todo el proceso el paciente abandona el hospital con su
+     * dosis de la vacuna
+     */
     public void run() {
         try {
             recepcion.meterColaEspera(this); //Cuando un paciente llega se mete en la cola de recepción

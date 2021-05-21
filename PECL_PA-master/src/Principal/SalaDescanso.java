@@ -18,20 +18,37 @@ import javax.swing.JTextArea;
  */
 public class SalaDescanso {
 
-    private JTextArea colaSalaDescanso;
-    private BlockingQueue colaSala = new LinkedBlockingDeque();
-    private BlockingQueue pacientesObservacion;
-    private BufferedWriter fichero;
-    private Date objDate;
-    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private JTextArea colaSalaDescanso; //JTextArea donde salen todos los trabajadores del hospital cuando descansan
+    private BlockingQueue colaSala; //Cola donde se meten los trabajadores para luego poder sacarla por la interfaz
+    private BlockingQueue pacientesObservacion; //Cola de los pacientes que están en observación
+    private BufferedWriter fichero; //Fichero donde se guarda toda la información
+    private Date objDate; //Fecha de los movimientos de la sala de descanso
+    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); //Formato de la fecha
 
+    /**
+     * Constructor de la sala de descanso
+     *
+     * @param colaSalaDescanso JTextArea donde se guarda la información de todos
+     * los trabajadores que descansan
+     * @param pacientesObservacion Cola de pacientes de observación
+     * @param fichero Fichero donde se guarda la información
+     */
     public SalaDescanso(JTextArea colaSalaDescanso, BlockingQueue pacientesObservacion, BufferedWriter fichero) {
         this.colaSalaDescanso = colaSalaDescanso;
         this.pacientesObservacion = pacientesObservacion;
+        this.colaSala = new LinkedBlockingDeque();
         this.fichero = fichero;
     }
 
-    //Añadimos los sanitarios a la sala de Descanso
+    /**
+     * Método en el cuál llegan los sanitarios y descansan el tiempo indicado,
+     * este método solo se utiliza al principio del programa porque es cuando
+     * los sanitarios se cambian para ir a sus puestos
+     *
+     * @param sanitario Sanitario que se cambia cuando llega al hospital
+     * @throws InterruptedException Excepción de interrupción
+     * @throws IOException Excepción de entrada salida
+     */
     public void cambiarseSanitario(Sanitario sanitario) throws InterruptedException, IOException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl sanitario " + sanitario + " empieza a cambiarse\n";
@@ -53,6 +70,16 @@ public class SalaDescanso {
         fichero.flush();
     }
 
+    /**
+     * Método que utilizan los auxiliares para cuando les toca descanso, lo
+     * único que hacen es salir en la interfaz y descansar el tiempo que pasan
+     * por parámetro
+     *
+     * @param auxiliar Auxiliar que descansa
+     * @param maximo Tiempo máximo que puede estar descansando
+     * @param minimo Tiempo mínimo que puede estar descansando
+     * @throws IOException Excepción de entrada salida
+     */
     public void descansoAuxiliares(Auxiliar auxiliar, int maximo, int minimo) throws IOException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl auxiliar " + auxiliar + " comienza su descanso\n";
@@ -78,6 +105,17 @@ public class SalaDescanso {
         fichero.flush();
     }
 
+    /**
+     * Método en el cuál descansan los sanitarios, pasan por parámetro el tiempo
+     * que pueden estar descansando
+     *
+     * @param sanitario Sanitario que descansa después de vacunar o cuando el
+     * cliente en distribuida se lo indica
+     * @param maximo Tiempo máximo que puede estar descansando
+     * @param minimo Tiempo mínimo que puede estar descansando
+     * @throws IOException Excepción de entrada salida
+     * @throws InterruptedException Excepción de interrupción
+     */
     public void descansoSanitarios(Sanitario sanitario, int maximo, int minimo) throws IOException, InterruptedException {
         objDate = new Date();
         String mensaje = diaHora.format(objDate) + "\t\tEl sanitario " + sanitario + " empieza su descanso\n";
@@ -100,6 +138,12 @@ public class SalaDescanso {
         fichero.flush();
     }
 
+    /**
+     * Método que se utiliza para la segunda parte de la práctica, se recoge
+     * toda la información de la sala de descanso (lo que hay en el JTextArea)
+     *
+     * @return String con toda la información de la sala de descanso
+     */
     public String crearMensajeDescanso() {//Se pasa el contenido de la sala de descanso a String para enviarla al cliente
         String textoColaDescanso;
         textoColaDescanso = colaSalaDescanso.getText();

@@ -19,19 +19,31 @@ import javax.swing.JTextField;
 public class Recepcion {
 
     private JTextField pacienteRecepcion, auxiliarRecepcion; //Recepción tiene todos los JTextField necesarios, los recibe del main
-    private JTextArea colaRecepcion;
-
+    private JTextArea colaRecepcion; //JTextArea de la cola de recepción
     private BlockingQueue colaEspera; //Elegimos este tipo de cola porque es el más cómodo de utilizar
-
     private SalaVacunacion salaVacunacion; //Sala necesaria para que los pacientes pasen de recepcion a vacunacion
-    private SalaObservacion salaObservacion;
-
+    private SalaObservacion salaObservacion; //Sala de observación para que el auxiliar mire si está llena la sala
     private Semaphore semEsperaPaciente; //Semaforo que hace que el paciente espere mientras no haya nadie en la cola de espera en recepción
     private Semaphore semSalasOcupadas; //Semaforo que hacer que el paciente espere si la sala de observación y vacunación están ocupadas
-    private BufferedWriter fichero;
-    private Date objDate;
-    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private BufferedWriter fichero; //Fichero donde se guardad toda la información
+    private Date objDate; //Fecha en la que ocurren los movimientos
+    private DateFormat diaHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); //Formato de la fecha
 
+    /**
+     * Constructor de la recepción del hostpital. Se inicializan todos los
+     * atributos necesarios para el correcto funcionamiento
+     *
+     * @param colaRecepcion JTextArea de la cola de recepción
+     * @param pacienteRecepcion JTextField donde se indica el paciente que está
+     * siendo registrado
+     * @param auxiliarRecepcion JTextField donde se coloca el auxiliar 1 para
+     * poder registrar
+     * @param salaVacunacion Sala de vacunación para indicar que puesto y que
+     * sanitario atiende al paciente
+     * @param salaObservacion Sala de observación para saber si está llena y
+     * parar a los pacientes hasta que haya hueco
+     * @param fichero Fichero donde se guardan los movimientos
+     */
     public Recepcion(JTextArea colaRecepcion, JTextField pacienteRecepcion, JTextField auxiliarRecepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, BufferedWriter fichero) {
         this.colaRecepcion = colaRecepcion;
         this.pacienteRecepcion = pacienteRecepcion;
@@ -44,14 +56,33 @@ public class Recepcion {
         this.fichero = fichero;
     }
 
-    //En este metodo se recibe un paciente que va a ser ingresado a la cola de espera de la recepción
+    /**
+     * Método en el cual el paciente que llega se mete en la cola de la
+     * recepción para que luego le registre el auxiliar
+     *
+     * @param paciente Paciente que llega a la sala de recepción
+     * @throws InterruptedException Excepción de interrupción
+     */
     public void meterColaEspera(Paciente paciente) throws InterruptedException {
         colaEspera.put(paciente); //Se mete al paciente en la cola
         colaRecepcion.setText(colaEspera.toString()); //Mostramos en la cola de espera los pacientes que tenemos
         semEsperaPaciente.release(); //El release se hace para avisar al auxiliar 1 de que hay alguien en la cola y por lo tanto puede registrar
     }
 
-    //Metodo donde se registran los pacientes y el Aux1 indica si pueden seguir o no
+    /**
+     * Método en el cual llega el auxiliar 1 y va registrando a los pacientes,
+     * donde un 1% no está registrado, una vez que los registra comprueba que
+     * haya hueco en la sala de observación y la de vacunación y si hay hueco
+     * mira los puestos disponibles de la sala de vacunación para indicar al
+     * paciente donde tiene que ir y que sanitario le va atender. Tarda entre
+     * 0,5 y 1 segundos en realizar todo este proceso, una vez que el contadore
+     * del auxiliar 1 llega a 10 se va a descansar
+     *
+     * @param auxiliar1 Auziliar1 que registra a los pacientes que están en
+     * recepción
+     * @throws InterruptedException Excepción de interrupción
+     * @throws IOException Excepción de entrada salida
+     */
     public void registrarPacientes(Auxiliar auxiliar1) throws InterruptedException, IOException {
 
         //El auxiliar se pone en su puesto cuando llega por primera vez o viene de un descanso
@@ -69,10 +100,6 @@ public class Recepcion {
             } else if (salaVacunacion.getColaVacunar().size() > 9 || (salaObservacion.getCapacidadObservacion().size() + salaObservacion.getPacientesObservacion().size()) > 19) {
                 semSalasOcupadas.acquire();
             } else {
-                /*  System.out.println(semSalasOcupadas.availablePermits() + " Permisos del auxiliar");
-                System.out.println("Cola sala vacunación " + salaVacunacion.getColaVacunar().size());
-                System.out.println("Cola sala Observación " +( salaObservacion.getCapacidadObservacion().size() + salaObservacion.getPacientesObservacion().size()));
-                 */
                 Paciente paciente = (Paciente) colaEspera.take(); //Con esto lo saca de la cola y lo borra
                 pacienteRecepcion.setText(paciente.toString());
                 colaRecepcion.setText(colaEspera.toString()); //Cuando se coge a un paciente se actualiza la cola de espera 
@@ -93,7 +120,6 @@ public class Recepcion {
                             puestoObtenido = true;
                         }
                     }
-
                     paciente.getRegistrado().set(true); //Se confirma que se puede vacunar
                     auxiliar1.getSemRegistrar().release(); //Una vez que ha terminado el registro, el Auxiliar le da permiso para que avance a la siguiente sala
                     pacienteRecepcion.setText(""); //una vez que sabe a que sala va y a que medico le toca ya se limpia el Jtextfield para el siguiente
@@ -112,27 +138,27 @@ public class Recepcion {
                     System.out.print(mensaje);
                     fichero.write(mensaje);
                     fichero.flush();
-
                 }
                 auxiliar1.getContadorAux1().incrementAndGet();
             }
-
         }
         auxiliarRecepcion.setText(""); //Actualizamos el JTextField para que se aprecie cuando el A1 se va al descanso
     }
 
+    /**
+     * Método que se utiliza en la segunda parte de la práctica que es la de
+     * concurrencia distribuida, la función que tiene este método es recopilar
+     * toda la información que hay en la recepción para luego enviarsela al
+     * cliente
+     *
+     * @return ArrayList con toda la información de la recepción
+     */
     public ArrayList<String> crearMensajeRecepcion() {//Se crea un array con el contenido de la recepción para enviarlo al cliente
         ArrayList<String> mensaje = new ArrayList<String>();
         mensaje.add(colaRecepcion.getText());
         mensaje.add(pacienteRecepcion.getText());
         mensaje.add(auxiliarRecepcion.getText());
         return mensaje;
-    }
-
-    public void recibirMensaje(ArrayList<String> mensaje) {//Se imprime por pantalla el contenido de los 20 puestos del servidor
-        colaRecepcion.setText(mensaje.get(0));
-        pacienteRecepcion.setText(mensaje.get(1));
-        auxiliarRecepcion.setText(mensaje.get(2));
     }
 
     public JTextField getPacienteRecepcion() {

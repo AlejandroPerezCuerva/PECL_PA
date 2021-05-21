@@ -13,24 +13,34 @@ import java.util.logging.Logger;
  */
 public class CrearPacientes extends Thread {
 
-    /*
-    Se necesita un crear Pacientes porque el sleep se tiene que hacer aqui y no se puede interrumpir al main.
-    si se hace el sleep en pacientes el problema es que los 2000 pacientes se crean a la vez, hacen el sleep y los 2000 entran de golpe a la recepcion
-    por eso hay que crear una clase para crear los pacientes y que se creen con un sleep para que lleguen de forma escalonada
-     */
-    private Recepcion recepcion;
-    private ExecutorService pool = Executors.newCachedThreadPool(); //Se crean los hilos con un pool para luego poder controlar la vida de ellos 
-    private SalaVacunacion salaVacunacion;
-    private SalaObservacion salaObservacion;
-    private Semaphore semRegistrar;
+    private Recepcion recepcion; //Recepción que luego se le pasa como parámetro a los pacientes
+    private ExecutorService pool; //Se crean los hilos con un pool para luego poder controlar la vida de ellos 
+    private SalaVacunacion salaVacunacion; //Sala de vacunación para pasarsela a los pacientes
+    private SalaObservacion salaObservacion; //Sala de observación para pasarsela a los pacientes
+    private Semaphore semRegistrar; //Semáforo que comparten los pacientes con el auxiliar 1 para que pasen de 1 en 1
 
+    /**
+     * Constructor de la clase que crea los pacientes de 1 a 3 segundos
+     *
+     * @param recepcion Recepción para pasarsela a los pacientes
+     * @param salaVacunacion Sala de vacunación para pasarsela a los pacientes
+     * @param salaObservacion Sala de observación para pasarsela a los pacientes
+     * @param semRegistrar Semáforo para los pacientes que comparten con el
+     * auxiliar 1
+     */
     public CrearPacientes(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, Semaphore semRegistrar) {
         this.recepcion = recepcion;
+        this.pool = Executors.newCachedThreadPool();
         this.salaVacunacion = salaVacunacion;
         this.salaObservacion = salaObservacion;
         this.semRegistrar = semRegistrar;
     }
 
+    /**
+     * Método run de la clase crear pacientes que su función es ir creando los
+     * pacientes con un periodo de 1 a 3 segundos. Se crean con un pool para
+     * luego poder controlar la vida de los pacientes
+     */
     public void run() {
         //Se crean los 2000 pacientes con un sleep de 1 a 3 segundos de forma aleatoria para que entren de forma ordenada y escalonada
         for (int i = 0; i < 2000; i++) {
