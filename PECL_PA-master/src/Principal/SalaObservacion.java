@@ -1,5 +1,6 @@
 package Principal;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
@@ -94,6 +95,7 @@ public class SalaObservacion {
 
         sleep(10000); //El paciente está 10 segundos es la observación 
         if (reaccion) {
+            puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.RED);//Se pone en rojo para resaltar que hay un problema
             capacidadObservacion.take(); //También hay que sacar al paciente de esta lista
             objDate = new Date();
             String mensaje = diaHora.format(objDate) + "\t\tEl paciente " + paciente.toString() + " muestra sintomas\n";
@@ -135,6 +137,7 @@ public class SalaObservacion {
         puestos.get(paciente.getPuesto()).getJtfPuesto().setText(puestoCurar);
 
         //El sanitario y el pacienten hacen el sleep para ver la reacción del paciente a la vacuna
+        puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.BLACK);//Se vuelve a poner el color normal para indicar que ya está siendo atendido
         sleep((int) (3000 * Math.random() + 2000));//Tarda entre 2 y 5 segundos
         paciente.getReaccionVacuna().set(false);
         paciente.getSemObservar().release();
