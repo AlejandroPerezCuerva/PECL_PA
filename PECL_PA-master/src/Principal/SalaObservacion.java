@@ -95,6 +95,7 @@ public class SalaObservacion {
 
         sleep(10000); //El paciente está 10 segundos es la observación 
         if (reaccion) {
+
             puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.RED);//Se pone en rojo para resaltar que hay un problema
             capacidadObservacion.take(); //También hay que sacar al paciente de esta lista
             objDate = new Date();
@@ -136,11 +137,13 @@ public class SalaObservacion {
         puestoCurar = puestos.get(paciente.getPuesto()).getJtfPuesto().getText() + "," + sanitario.toString();
         puestos.get(paciente.getPuesto()).getJtfPuesto().setText(puestoCurar);
 
+        puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.RED);//Se pone en rojo para resaltar que hay un problema
         //El sanitario y el pacienten hacen el sleep para ver la reacción del paciente a la vacuna
-        puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.BLACK);//Se vuelve a poner el color normal para indicar que ya está siendo atendido
+
         sleep((int) (3000 * Math.random() + 2000));//Tarda entre 2 y 5 segundos
         paciente.getReaccionVacuna().set(false);
         paciente.getSemObservar().release();
+        puestos.get(paciente.getPuesto()).getJtfPuesto().setForeground(Color.BLACK);//Se vuelve a poner el color normal para indicar que ya está siendo atendido
         objDate = new Date();
         mensaje = diaHora.format(objDate) + "\t\tAl paciente " + paciente.toString() + " se le da el alta\n";
         System.out.print(mensaje);
@@ -169,9 +172,11 @@ public class SalaObservacion {
     }
 
     /**
-     * Método para la segunda parte de la práctica (Concurrencia distribuida) en el cual se recoge toda la información de todos los puestos de la sala de observación y de la 
-     * salida del hospital para poder enviarselo en un ArrayList al cliente
-     * 
+     * Método para la segunda parte de la práctica (Concurrencia distribuida) en
+     * el cual se recoge toda la información de todos los puestos de la sala de
+     * observación y de la salida del hospital para poder enviarselo en un
+     * ArrayList al cliente
+     *
      * @return ArrayList con toda la información de la sala de observación
      */
     public ArrayList<String> crearMensajeObservacion() {//Se crea un array con el contenido de los 20 puestos para enviarlo al cliente

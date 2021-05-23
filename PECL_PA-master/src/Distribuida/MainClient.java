@@ -15,9 +15,10 @@ import javax.swing.JTextField;
  */
 public class MainClient extends javax.swing.JFrame {
 
-    private Socket cliente;
-    private HiloClient hiloClient;
-    private ArrayList<JTextField> arrayJTexField = new ArrayList<>();
+    private Socket cliente; //Socket que tiene el cliente con el servidor
+    private HiloClient hiloClient; //Hilo cliente para poder enviar y recibir toda la información ya que se necesita un bucle infinito
+    //Y si se hace en esta clase, la interfaz del cliente nunca llega a salir
+    private ArrayList<JTextField> arrayJTexField = new ArrayList<>(); //ArrayList de todos los JTextField que se le pasa al hilo cliente para poder modificarlos
 
     /**
      * Creates new form Main
@@ -28,7 +29,8 @@ public class MainClient extends javax.swing.JFrame {
             cliente = new Socket(InetAddress.getLocalHost(), 5002); //El cliente se conecta al servidor
             System.out.println("Conexion establecida");
 
-            arrayJTexField = crearArrayJTextFields();
+            arrayJTexField = crearArrayJTextFields(); //Se crea un array con todos los JTextField de la interfaz 
+            //Se crea un hilo cliente y le pasamos toda la información necesaria
             hiloClient = new HiloClient(cliente, arrayJTexField, colaRecepcion, colaSalaDescanso, salidaTextField);
             hiloClient.start();
         } catch (IOException ex) {
@@ -36,9 +38,16 @@ public class MainClient extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
+    /**
+     * Método para guardar todas los JTextField en un array para pasarselo al
+     * hilo cliente y poder modificarlo
+     *
+     * @return ArrayList con todos los JTextField
+     * @throws IOException Excepciones de entrada salida
+     * @throws InterruptedException Excepciones de interrupciones
+     */
     public ArrayList crearArrayJTextFields() throws IOException, InterruptedException {
         arrayJTexField.add(pacienteRecepcion);
         arrayJTexField.add(auxiliarRecepcion);
@@ -185,6 +194,9 @@ public class MainClient extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cliente");
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -976,9 +988,6 @@ public class MainClient extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
-            // TODO add your handling code here:
-
-            //Cuando se cierra la ventana mandamos el mensaje de desconexion
             cliente.close();
         } catch (IOException ex) {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -1090,6 +1099,16 @@ public class MainClient extends javax.swing.JFrame {
             Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_botonCerrar10ActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        // TODO add your handling code here:
+        //Se cierra la conexión del cliente
+        try {
+            cliente.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MainClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

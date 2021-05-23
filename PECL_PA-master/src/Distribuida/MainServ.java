@@ -34,16 +34,16 @@ public class MainServ extends javax.swing.JFrame {
     private AtomicInteger contadorAux1 = new AtomicInteger(0); //Se utiliza un atomic porque es mas seguro que un int normal, lo utilizamos de contador
     private AtomicInteger contadorAux2 = new AtomicInteger(0); //Hacen falta dos contadores porque sino se hace referencia al mismo
     private ArrayList<AtomicInteger> contadoresSanitarios = new ArrayList<>(); //Cada sanitario necesita un contador para llevar la cuenta de los pacientes vacunados
-    private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>();
-    private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>();
+    private ArrayList<JTextField> puestosVacunacion = new ArrayList<JTextField>(); //ArrayList con todos los puestos de vacunación para pasarlos y poder modificarlos
+    private ArrayList<JTextField> puestosObservacion = new ArrayList<JTextField>(); //ArrayList con todos los puestos de observación para pasarlos y poder modificarlos
     private Semaphore semRegistrar = new Semaphore(0); //Es un semaforo que será objeto compartido entre los pacientes y el auxiliar 1 para que el auxiliar tenga
     //el privilegio de detener al paciente hasta que termine el registro de la vacuna. Tiene que ser un objeto compartido para que el paciente pueda esperar
     private BlockingQueue pacientesObservacion = new LinkedBlockingQueue();//Objeto para coordinar la observacion de los pacientes
 
     private File archivo; //De esta manera se guarda el fichero en la propia carpeta del proyecto y no hace falta poner la ruta
-    private BufferedWriter fichero;
+    private BufferedWriter fichero; //Fichero donde se guarda toda la información de los movimientos del programa
 
-    private HiloServidor hiloServidor;
+    private HiloServidor hiloServidor; //Hilo para crear el puerto del servidor y aceptar todas las entradas del cliente
 
     /**
      * Creates new form Main
@@ -218,6 +218,9 @@ public class MainServ extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hospital de Vacunación");
         addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
@@ -875,6 +878,16 @@ public class MainServ extends javax.swing.JFrame {
             Logger.getLogger(MainServ.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        try {
+            // TODO add your handling code here:
+            fichero.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MainServ.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments

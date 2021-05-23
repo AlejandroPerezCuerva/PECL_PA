@@ -7,8 +7,6 @@ import Principal.SalaVacunacion;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -16,13 +14,21 @@ import java.util.logging.Logger;
  */
 public class HiloServidor extends Thread {
 
-    private ServerSocket server;
-    private Socket conexion;
-    private Recepcion recepcion;
-    private SalaVacunacion salaVacunacion;
-    private SalaObservacion salaObservacion;
-    private SalaDescanso salaDescanso;
+    private ServerSocket server; //Servidor que se especifica el puerto para la conexión con el cliente
+    private Socket conexion;  //socket de la conexión con el cliente
+    private Recepcion recepcion; //Recepción del hospital
+    private SalaVacunacion salaVacunacion; //Sala de vacunación del hospital
+    private SalaObservacion salaObservacion; //Sala de observación del hospital
+    private SalaDescanso salaDescanso; //Sala de descanso del hospital
 
+    /**
+     * Constructor de la clase Hilo Servidor
+     *
+     * @param recepcion Recepción del hospital
+     * @param salaVacunacion Sala de vacunación del hospital
+     * @param salaObservacion Sala de observación del hospital
+     * @param salaDescanso Sala de descanso del hospital
+     */
     public HiloServidor(Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, SalaDescanso salaDescanso) {
         this.recepcion = recepcion;
         this.salaVacunacion = salaVacunacion;
@@ -30,6 +36,12 @@ public class HiloServidor extends Thread {
         this.salaDescanso = salaDescanso;
     }
 
+    /**
+     * Método run del hilo servidor. Aquí se especifica el puerto que está
+     * disponible el servidor para que el cliente se pueda conectar. Y en un
+     * bucle infinito se van aceptando todas las conexiones con los diferentes
+     * clientes que estén
+     */
     public void run() {
         try {
             server = new ServerSocket(5002);
@@ -40,7 +52,6 @@ public class HiloServidor extends Thread {
                 connect.start();
             }
         } catch (IOException ex) {
-            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -91,7 +102,5 @@ public class HiloServidor extends Thread {
     public void setSalaDescanso(SalaDescanso salaDescanso) {
         this.salaDescanso = salaDescanso;
     }
-    
-    
 
 }

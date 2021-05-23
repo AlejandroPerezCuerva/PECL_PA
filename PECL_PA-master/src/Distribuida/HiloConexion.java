@@ -9,8 +9,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,18 +16,28 @@ import java.util.logging.Logger;
  */
 public class HiloConexion extends Thread {
 
-    private Socket conexion;
-    private DataInputStream entradaBooleano, entradaBoton, entradaInformar;
-    private boolean boleanoBotones = false, clienteInformar = false;
-    private int puestoBoton = 0;
-    private Recepcion recepcion;
-    private SalaVacunacion salaVacunacion;
-    private SalaObservacion salaObservacion;
-    private SalaDescanso salaDescanso;
-    private ArrayList<String> arrayRecepcion, arrayVacunacion, arrayObservacion;
+    private Socket conexion; //Conexión con el cliente por medio de un socket
+    private DataInputStream entradaBooleano, entradaBoton, entradaInformar; //Todas las entradas que tiene el servidor
+    private boolean boleanoBotones = false, clienteInformar = false; //booleanos para el control de los botones que pulsa el cliente
+    private int puestoBoton = 0; //Puesto del boton que ha pulsado el cliente
+    private Recepcion recepcion; //Recepción del hospital
+    private SalaVacunacion salaVacunacion; //Sala de vacunación del hospital
+    private SalaObservacion salaObservacion; //Sala de observación del hospital
+    private SalaDescanso salaDescanso; //Sala de descanso del hospital
+    private ArrayList<String> arrayRecepcion, arrayVacunacion, arrayObservacion; //String con la información que se le envía al cliente
     private String stringDescanso = "", stringSalidaHospital = ""; //Como solo hay un JTextArea no hace falta array, con un string es suficiente
-    private ArrayList<DataOutputStream> arraySalidas;
+    private ArrayList<DataOutputStream> arraySalidas; //Array de salidas hacia el cliente
 
+    /**
+     * Constructor de la clase HiloConexión. Aquí se inicializan todos los
+     * atributos
+     *
+     * @param conexion Socket de conexión con el cliente
+     * @param recepcion Recepción del hospital
+     * @param salaVacunacion Sala de vacunación del hospital
+     * @param salaObservacion Sala de observación del hospital
+     * @param salaDescanso Sala de descanso del hospital
+     */
     public HiloConexion(Socket conexion, Recepcion recepcion, SalaVacunacion salaVacunacion, SalaObservacion salaObservacion, SalaDescanso salaDescanso) {
         try {
             this.conexion = conexion;
@@ -47,10 +55,16 @@ public class HiloConexion extends Thread {
                 arraySalidas.add(salida);
             }
         } catch (IOException ex) {
-            Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    /**
+     * Metodo run del hilo conexión. Aquí se recoge toda la información
+     * necesaria de las distintas salas del hospital para luego en bucles o
+     * simplementes OutputsStream poder enviársela al cliente por medio del
+     * socket de conexión. Después cuando se termina la conexión se cierran
+     * todas las entradas y salidas
+     */
     public void run() {
 
         while (conexion.isConnected()) {
@@ -92,12 +106,9 @@ public class HiloConexion extends Thread {
                         }
                     }
                 }
-
             } catch (IOException ex) {
-                Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
         try {
             //Cuando se desconecta es cuando se cierran todos los canales y conexión
             for (int i = 0; i < 37; i++) {
@@ -108,9 +119,7 @@ public class HiloConexion extends Thread {
             entradaInformar.close();
             conexion.close();
         } catch (IOException ex) {
-            Logger.getLogger(HiloConexion.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public Socket getConexion() {
